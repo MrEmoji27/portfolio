@@ -56,6 +56,10 @@ Layout:
 Updating: `git add . && git commit -m "..." && git push` — Cloudflare rebuilds automatically.
 Note: site files live in `public/`, so paths inside `index.html` stay relative and unchanged.
 
+Gotcha worth remembering: Cloudflare serves static assets *before* the Worker runs, so the
+Worker never sees `/`. `run_worker_first: ["/", "/index.html"]` in `wrangler.jsonc` is what
+makes the curl handler fire. Everything else still bypasses the Worker for full asset speed.
+
 ## TODO at deploy / when domain exists
 
 - [ ] Physically move the `#materials` section above `#works` in the markup and delete the

@@ -58,7 +58,12 @@
       modes, braille sub-character drawing. unfinished: the
       unofficial-api sign-in broke and needs a rewrite.
 
- №10  THIS SITE       html · css · js — nothing else
+ №10  SPEKTR          python · numpy · textual
+      terminal spectrum analyser for system audio. 2048-point
+      fft, ten bands, braille rendering, eight modes, spring
+      easing at 45fps. extracted from ytmcli's visualiser.
+
+ №11  THIS SITE       html · css · js — nothing else
       one hand-written file, no framework, no build step,
       wcag aa, zero trackers. yes, even this text file.
 

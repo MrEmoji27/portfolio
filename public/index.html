@@ -67,6 +67,13 @@
   }
   a,button,summary{cursor:pointer}
   ::selection{background:var(--red);color:var(--paper)}
+  *{-webkit-tap-highlight-color:transparent}
+  @media(hover:none){
+    body{cursor:auto}
+    a,button,summary{cursor:pointer}
+    /* hover-only flourishes are dead weight on touch */
+    .method:hover,.w-shots a:hover{transform:none}
+  }
   ::-webkit-scrollbar{width:16px}
   ::-webkit-scrollbar-track{background:var(--paper);border-left:3px solid var(--ink)}
   ::-webkit-scrollbar-thumb{background:var(--ink);border:3px solid var(--paper)}
@@ -81,7 +88,7 @@
   .skip:focus{top:1rem}
 
   /* ================= the composition ================= */
-  #art{position:fixed;inset:0;width:100vw;height:100vh;z-index:0}
+  #art{position:fixed;inset:0;width:100vw;height:100dvh;z-index:0}
   #art .ink{fill:var(--ink)}
   #art .ink-s{stroke:var(--ink)}
   #art .shape{filter:drop-shadow(9px 9px 0 rgba(13,13,11,.85))}
@@ -148,7 +155,7 @@
   main{position:relative;z-index:1}
 
   /* ================= plate 1 ================= */
-  .plate{min-height:calc(100vh - 56px);padding:4vw;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+  .plate{min-height:calc(100svh - 56px);min-height:calc(100dvh - 56px);padding:4vw;display:flex;flex-direction:column;justify-content:space-between;position:relative}
   h1{
     font-family:'Archivo Black',sans-serif;
     font-size:clamp(5rem,25vw,24rem);
@@ -493,20 +500,102 @@
     .nav .links a.hide-m{display:none}
   }
   @media(max-width:700px){
-    .nav .links{gap:.5rem}
-    .nav .links a{padding:.25em .45em}
-    .nav .links a.hide-m,.nav .status{display:none}
+    /* touch targets: nothing tappable smaller than ~44px */
+    .nav{padding:.5rem 0 .5rem 4vw;gap:.6rem;align-items:center}
+    .nav .brand{font-size:.9rem;padding:.3em .5em;box-shadow:3px 3px 0 var(--red);flex-shrink:0}
+    /* every link stays reachable — the row scrolls instead of hiding items */
+    .nav .links{
+      gap:.4rem;overflow-x:auto;flex-wrap:nowrap;
+      padding:.15rem 4vw .15rem .2rem;margin:0;
+      scrollbar-width:none;-webkit-overflow-scrolling:touch;
+      mask-image:linear-gradient(90deg,#000 84%,transparent);
+    }
+    .nav .links::-webkit-scrollbar{display:none}
+    .nav .links a,#flip{
+      padding:.5em .7em;min-height:40px;display:inline-flex;align-items:center;
+      font-size:.66rem;letter-spacing:.06em;white-space:nowrap;flex-shrink:0;
+      border-width:2px;
+    }
+    .nav .links a.hide-m{display:inline-flex}
+    .nav .status{display:none}
+
+    /* breathing room — 14vh of padding is a lot of thumb-scrolling on a phone */
+    section{padding:8vh 5vw 4vh}
+    .plate{padding:6vw 5vw}
+    .sec-head{margin-bottom:3.5vh}
+    section[data-num]::after{font-size:34vw;top:5vh;opacity:.05}
+
+    /* hero */
+    h1{font-size:clamp(3.6rem,26vw,8rem);letter-spacing:-.05em}
+    h1 .o{-webkit-text-stroke-width:3px}
+    .subtitle{transform:none}
+    .statement{font-size:clamp(1.35rem,6.6vw,2.2rem)}
+    .sec-head{font-size:.66rem;letter-spacing:.18em}
+    .sec-head>:first-child{padding:.3em .6em}
+    section[data-num]::after{font-size:30vw;right:-1vw}
+    .xp{flex-direction:column;gap:.6rem}
+    .method h3{font-size:1.05rem}
+    .method p{font-size:.82rem}
+    .subtitle{padding:1.1rem 1.2rem;font-size:.88rem;box-shadow:7px 7px 0 var(--ink)}
+    .pulse{font-size:.65rem;padding:.5em .7em}
+    .hero-foot{align-items:center}
+    .btn-row{width:100%}
+    .down{flex:1;text-align:center;padding:.9em 1em;box-shadow:5px 5px 0 var(--ink)}
+    .seal{width:82px;height:82px}
+    .edge{display:none}
+
+    /* works */
     .tk::after{margin:0 1.3rem}
     .tk{font-size:.72rem}
-    .big-mail{font-size:1rem;box-shadow:8px 8px 0 var(--red)}
-    .w-head{grid-template-columns:3.4rem 1fr auto;gap:1rem;padding:1.2rem .9rem}
+    .w-head{grid-template-columns:2.6rem 1fr auto;gap:.7rem;padding:1rem .8rem;align-items:center}
+    .w-head::before{font-size:.95rem;align-self:start;padding-top:.25rem}
+    .w-name{font-size:clamp(1.15rem,6.2vw,1.75rem);line-height:1.05;word-break:break-word}
+    .w-tease{grid-column:2/3;font-size:.7rem;opacity:.7;margin-top:.25rem}
+    .w-plus{font-size:1.25rem;align-self:start;padding-top:.2rem}
+    .w-desc{font-size:.85rem}
+    .w-feats li{font-size:.78rem;line-height:1.5}
     .w-tag{display:none}
     .w-inner{grid-template-columns:1fr;padding:1.4rem .9rem 1.8rem}
     .w-inner>div{grid-column:1}
-    .seal{width:100px;height:100px}
-    .edge{display:none}
-    .method{box-shadow:7px 7px 0 var(--ink)}
+    .w-links{gap:.7rem}
+    .w-links a,.w-links .cta,.w-links .na{padding:.7em 1em;font-size:.72rem}
+    /* screenshots swipe with snap instead of drifting mid-image */
+    .w-shots{scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;gap:.9rem}
+    .w-shots a{scroll-snap-align:center;box-shadow:5px 5px 0 var(--ink)}
+    .method{box-shadow:7px 7px 0 var(--ink);padding:1.5rem}
+    .method-grid{gap:1.6rem}
+    .xp{padding:1rem 1.1rem;box-shadow:7px 7px 0 var(--red)}
     ol{box-shadow:7px 7px 0 var(--ink)}
+
+    /* contact + footer */
+    .statement{font-size:clamp(1.5rem,7vw,2.4rem)}
+    .big-mail{font-size:.95rem;box-shadow:7px 7px 0 var(--red);padding:.6em .8em}
+    .copy-btn{margin-left:0;padding:.7em 1.1em}
+    .contact-row{gap:1.6rem;margin-top:5vh}
+    .colophon{
+      gap:.45rem;padding:1.1rem 5vw;font-size:.56rem;letter-spacing:.14em;
+      display:grid;grid-template-columns:1fr 1fr;text-align:left;
+    }
+    .colophon .cbar,.colophon .bcode{grid-column:1/-1;height:.8em}
+    .colophon span:nth-child(4){grid-column:1/-1}
+    .top-btn{right:.7rem;bottom:.7rem;width:34px;height:34px;font-size:.9rem}
+
+    /* modals need room and thumb-friendly controls */
+    .lb{padding:2vh 3vw;gap:.7rem}
+    .lb img{max-width:94vw;max-height:64vh;box-shadow:7px 7px 0 var(--red)}
+    .lb button{padding:.6em 1.1em;min-height:44px}
+    .lb .lb-cap{font-size:.68rem}
+    .tm-box{padding:1.4rem;box-shadow:9px 9px 0 var(--red)}
+    .tm-box input,.tm-box select{padding:.75em .7em;font-size:16px} /* 16px stops ios zooming on focus */
+    .tm-actions .go,.tm-actions .x{padding:.8em 1.2em;min-height:44px}
+    .tm-stamp{font-size:1.8rem;border-width:4px}
+  }
+  /* respect notches and gesture bars */
+  @supports(padding:max(0px)){
+    @media(max-width:700px){
+      .colophon{padding-bottom:max(1.1rem,env(safe-area-inset-bottom))}
+      .top-btn{bottom:max(.7rem,env(safe-area-inset-bottom))}
+    }
   }
   /* ================= interaction pass ================= */
   #prog{position:fixed;top:0;left:0;height:4px;width:0;background:var(--red);z-index:6;pointer-events:none}
@@ -521,12 +610,14 @@
   li.open .w-tease{display:none}
   ol li{scroll-margin-top:76px}
   .top-btn{
-    position:fixed;right:1.2rem;bottom:1.2rem;z-index:5;width:52px;height:52px;
+    position:fixed;right:1rem;bottom:1rem;z-index:5;width:38px;height:38px;
     display:none;align-items:center;justify-content:center;
-    font-size:1.4rem;font-weight:700;text-decoration:none;color:var(--ink);
-    background:var(--paper);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--red);
+    font-size:1rem;font-weight:700;text-decoration:none;color:var(--ink);
+    background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--red);
+    opacity:.9;
   }
   .top-btn.show{display:flex}
+  .top-btn:hover{opacity:1}
   .top-btn:hover{background:var(--ink);color:var(--paper)}
   #lb-count{color:#e8e4d8;font-size:.8rem;letter-spacing:.15em;align-self:center}
   .tm-box{position:relative}
@@ -617,7 +708,15 @@
   <rect class="shape" data-w="swelpt" data-depth="1.6" x="1060" y="620" width="200" height="38" fill="#1f3fd8" stroke="#0d0d0b" stroke-width="4" style="--r:14deg"/>
   <!-- № 09 ytmcli : yellow quarter-arc (a waveform's swing) -->
   <path class="shape" data-w="ytmcli" data-depth="1.5" d="M 585 760 A 110 110 0 0 1 695 650" fill="none" stroke="#f0b800" stroke-width="13"/>
-  <!-- № 10 this site : outlined square (the frame itself) -->
+  <!-- № 10 spektr : a spectrum — five bars of rising height -->
+  <g class="shape" data-w="spektr" data-depth="1.9">
+    <rect x="228" y="742" width="17" height="34" fill="#e03418" stroke="#0d0d0b" stroke-width="3"/>
+    <rect x="250" y="716" width="17" height="60" fill="#e03418" stroke="#0d0d0b" stroke-width="3"/>
+    <rect x="272" y="688" width="17" height="88" fill="#f0b800" stroke="#0d0d0b" stroke-width="3"/>
+    <rect x="294" y="724" width="17" height="52" fill="#1f3fd8" stroke="#0d0d0b" stroke-width="3"/>
+    <rect x="316" y="700" width="17" height="76" fill="#1f3fd8" stroke="#0d0d0b" stroke-width="3"/>
+  </g>
+  <!-- № 11 this site : outlined square (the frame itself) -->
   <rect class="shape ink-s" data-w="site" data-depth="2.0" x="470" y="105" width="64" height="64" fill="none" stroke-width="7" style="--r:-12deg"/>
 
   <!-- scattered marks -->
@@ -684,8 +783,8 @@
     </div>
     <div class="strip s2">
       <div class="strip-inner">
-        ten works <span class="dot">●</span> zero trackers <span class="dot">●</span> open to work <span class="dot">●</span> testers wanted <span class="dot">●</span>
-        ten works <span class="dot">●</span> zero trackers <span class="dot">●</span> open to work <span class="dot">●</span> testers wanted <span class="dot">●</span>&#160;
+        eleven works <span class="dot">●</span> zero trackers <span class="dot">●</span> open to work <span class="dot">●</span> testers wanted <span class="dot">●</span>
+        eleven works <span class="dot">●</span> zero trackers <span class="dot">●</span> open to work <span class="dot">●</span> testers wanted <span class="dot">●</span>&#160;
       </div>
     </div>
   </div>
@@ -927,6 +1026,7 @@
             <li>10-band equaliser applied live to mpv and persisted across tracks</li>
             <li>textual tui with search, library, and queue tabs, a command palette, and 30+ themes</li>
             <li>honest status: browser-cookie auth against the unofficial api broke — the fix is a rewrite, not a patch</li>
+            <li>the visualiser outlived it — extracted and rebuilt as <b>spektr</b>, № 10 below</li>
           </ul>
           <div class="w-shots">
             <a href="img/ytmcli-themes.png" target="_blank" rel="noopener"><img src="img/ytmcli-themes.png" alt="ytmcli theme picker — a searchable list of more than thirty terminal themes" loading="lazy"></a>
@@ -935,6 +1035,26 @@
           </div>
           <p class="fig" aria-hidden="true">fig. 01–03 — theme picker · search in matrix · command palette</p>
           <div class="w-links"><span class="na">unfinished — auth rebuild pending</span></div>
+        </div></div></div>
+      </li>
+
+      <li class="reveal" style="--d:.38s" data-w="spektr">
+        <button class="w-head" aria-expanded="false">
+          <span class="w-name">spektr</span>
+          <span class="w-tag">python · numpy · textual</span>
+          <span class="w-plus">+</span>
+          <span class="w-tease">a spectrum analyser that lives in your terminal</span>
+        </button>
+        <div class="w-body"><div class="w-inner"><div>
+          <p class="w-desc">play music anywhere — spotify, a browser tab, a game — and spektr draws it in the terminal. it started as the visualiser inside ytmcli, turned out to be the best part of that project and the only part that didn't depend on anyone's api, so it moved out and got its own name.</p>
+          <ul class="w-feats">
+            <li>2048-point fft across ten bands, 20 hz to 20 khz, straight off the system's output</li>
+            <li>braille sub-character rendering — four times the vertical resolution of a text cell</li>
+            <li>eight modes: bars, bricks, columns, wave, scatter, flame, retro, pulse</li>
+            <li>critically-damped spring easing at 45 fps, tuned for zero overshoot</li>
+            <li>auto-finds the right audio source: wasapi loopback, stereo mix, or a monitor device</li>
+          </ul>
+          <div class="w-links"><span class="na">shipping soon — public repo &amp; pip install</span></div>
         </div></div></div>
       </li>
 
@@ -1089,7 +1209,10 @@
         li.classList.add('open');
         btn.setAttribute('aria-expanded','true');
         lite(li.dataset.w);
-        setTimeout(function(){ li.scrollIntoView({behavior:'smooth', block:'start'}); }, 120);
+        setTimeout(function(){
+          var y = li.getBoundingClientRect().top + window.scrollY - 64;
+          window.scrollTo({top: y, behavior: 'smooth'});
+        }, 140);
       } else {
         lite(null);
       }
@@ -1102,11 +1225,14 @@
   var track = document.querySelector('.tk-track');
   if(track){ track.innerHTML += track.innerHTML; }
 
-  /* ---- cursor + scroll choreography ---- */
-  if(!reduced){
+  /* ---- cursor + scroll choreography ----
+     touch devices have no cursor and a scroll-linked rAF loop moving 11 nodes
+     is the single jankiest thing we could do on a phone, so it is desktop-only. */
+  var fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(!reduced && fine){
     var movers = document.querySelectorAll('#art [data-depth]');
     var mx = 0, my = 0, cx = 0, cy = 0;
-    var scrollFactors = {zoro:-.06, zolt:.04, eails:-.03, chronicle:.09, f1ml:-.05, ttz:.07, vault:.06, swelpt:-.08, ytmcli:.08, site:.05};
+    var scrollFactors = {zoro:-.06, zolt:.04, eails:-.03, chronicle:.09, f1ml:-.05, ttz:.07, vault:.06, swelpt:-.08, ytmcli:.08, spektr:-.07, site:.05};
     window.addEventListener('mousemove', function(e){
       mx = (e.clientX / window.innerWidth) * 2 - 1;
       my = (e.clientY / window.innerHeight) * 2 - 1;
@@ -1273,10 +1399,17 @@
   /* ---- scroll progress + back to top ---- */
   var prog = document.getElementById('prog');
   var topBtn = document.getElementById('topBtn');
-  window.addEventListener('scroll', function(){
+  var scrollQueued = false;
+  function onScroll(){
+    scrollQueued = false;
     var max = document.documentElement.scrollHeight - window.innerHeight;
     prog.style.width = (max > 0 ? (window.scrollY / max * 100) : 0) + '%';
-    topBtn.classList.toggle('show', window.scrollY > 900);
+    /* show once past the hero, but get out of the way of the colophon at the very bottom */
+    var atBottom = max - window.scrollY < 140;
+    topBtn.classList.toggle('show', window.scrollY > 900 && !atBottom);
+  }
+  window.addEventListener('scroll', function(){
+    if(!scrollQueued){ scrollQueued = true; requestAnimationFrame(onScroll); }
   }, {passive:true});
 
   /* ---- scroll-spy: mark the section you're in ---- */

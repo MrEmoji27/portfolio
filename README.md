@@ -43,15 +43,18 @@ Content lives in three places. When you change one, check the others:
 - **GitHub pulse**: fetches `api.github.com/users/MrEmoji27/events/public` — change the username there if it ever changes.
 - **PGP**: live — key in `pgp.txt`, fingerprint `9DB9 4C2F 801B F217 AA15 6643 4120 E017 924C 16F1`, expires 2028-07-18 (renew before then). At domain time, update the `Encryption:` line in `.well-known/security.txt`.
 
-## Deploy — Cloudflare Pages
+## Deploy — Cloudflare Workers (static assets)
 
-Host: Cloudflare Pages. Deploy the whole folder (git-connected).
+Live at `portfolio.mremoji47.workers.dev`, git-connected to `MrEmoji27/portfolio`.
 
-- Build command: *(none)*
-- Build output directory: `/`
-- Functions are picked up automatically from `functions/`
+Layout:
 
-Updating: `git add . && git commit -m "..." && git push` — Pages rebuilds automatically.
+- `public/` — everything served to visitors (the site itself)
+- `src/index.js` — the Worker: serves assets, and returns `zemo.txt` to curl/wget/httpie at `/`
+- `wrangler.jsonc` — config (assets directory, 404 handling)
+
+Updating: `git add . && git commit -m "..." && git push` — Cloudflare rebuilds automatically.
+Note: site files live in `public/`, so paths inside `index.html` stay relative and unchanged.
 
 ## TODO at deploy / when domain exists
 

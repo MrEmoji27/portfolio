@@ -53,9 +53,10 @@
       reminders prototype — shelved, lessons kept.
 
  №09  YTMCLI          python · mpv · terminal ui
-      youtube music in the terminal — keyboard-first, spectrum
-      visualizer, 10-band eq, 30+ themes. unfinished: the
-      youtube sign-in is broken and needs rebuilding.
+      youtube music in the terminal. centrepiece is a real
+      2048-point fft visualiser — ten bands, eight render
+      modes, braille sub-character drawing. unfinished: the
+      unofficial-api sign-in broke and needs a rewrite.
 
  №10  THIS SITE       html · css · js — nothing else
       one hand-written file, no framework, no build step,

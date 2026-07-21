@@ -920,14 +920,20 @@
           <span class="w-tease">youtube music in the terminal — with a live visualizer</span>
         </button>
         <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">a keyboard-first terminal client for youtube music — your whole library, search, and queue without ever opening a browser. retro winamp energy, modern plumbing.</p>
+          <p class="w-desc">a keyboard-first terminal client for youtube music — search, library, and queue without opening a browser. the interface is built and the playback layer works; the youtube music sign-in is currently broken, so this one sits unfinished until i rebuild the auth path.</p>
           <ul class="w-feats">
-            <li>real-time audio spectrum visualizer via wasapi loopback</li>
-            <li>live 10-band equalizer applied to mpv, persistent across tracks</li>
-            <li>full library, search, and queue with reorder, skip, and auto-advance</li>
-            <li>five switchable themes — matrix, amber, ocean, dracula, mono</li>
+            <li>full textual tui — search, library, and queue tabs, everything reachable by keystroke</li>
+            <li>spectrum visualizer and a 10-band equalizer wired into mpv playback</li>
+            <li>30+ switchable themes, from matrix and gruvbox to catppuccin and solarized</li>
+            <li>command palette for every action; honest status: blocked on google oauth</li>
           </ul>
-          <div class="w-links"><span class="na">code private for now</span></div>
+          <div class="w-shots">
+            <a href="img/ytmcli-themes.png" target="_blank" rel="noopener"><img src="img/ytmcli-themes.png" alt="ytmcli theme picker — a searchable list of more than thirty terminal themes" loading="lazy"></a>
+            <a href="img/ytmcli-matrix.png" target="_blank" rel="noopener"><img src="img/ytmcli-matrix.png" alt="ytmcli search view in the matrix theme, with the keybinding bar along the bottom" loading="lazy"></a>
+            <a href="img/ytmcli-palette.png" target="_blank" rel="noopener"><img src="img/ytmcli-palette.png" alt="ytmcli command palette — searchable commands for keys, theme, and screenshots" loading="lazy"></a>
+          </div>
+          <p class="fig" aria-hidden="true">fig. 01–03 — theme picker · search in matrix · command palette</p>
+          <div class="w-links"><span class="na">unfinished — auth rebuild pending</span></div>
         </div></div></div>
       </li>
 

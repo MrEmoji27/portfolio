@@ -1,0 +1,88 @@
+
+ ███████╗ ███████╗ ███╗   ███╗  ██████╗
+ ╚══███╔╝ ██╔════╝ ████╗ ████║ ██╔═══██╗
+   ███╔╝  █████╗   ██╔████╔██║ ██║   ██║
+  ███╔╝   ██╔══╝   ██║╚██╔╝██║ ██║   ██║
+ ███████╗ ███████╗ ██║ ╚═╝ ██║ ╚██████╔╝
+ ╚══════╝ ╚══════╝ ╚═╝     ╚═╝  ╚═════╝
+
+ zemo (alias) — full-stack developer
+ local-first software · end-to-end encryption · machine learning
+ currently open to freelance & full-time work.
+
+ you get bonus points for curling this. the graphical version has
+ more shapes, but everything that matters is right here.
+
+──────────────────────────────────────────────────────────────────
+ 01 — SELECTED WORKS                                    2024 — 2026
+──────────────────────────────────────────────────────────────────
+
+ №01  ZORO            fastapi · react · ollama
+      terminal-styled AI chat, fully on-device. persistent
+      sessions, long-term memory, file ingestion.
+      code: https://github.com/MrEmoji27/zore
+
+ №02  ZOLT            react native · fastify · nacl   [TESTERS WANTED]
+      e2e encrypted messenger. the server is a blind relay —
+      it can never read a thing. history lives on-device only.
+      product — launching 2026.
+
+ №03  EAILS           flask · computer vision · gemini
+      webcam-aware learning: engagement scoring, adaptive
+      quizzes, pace recommendations. shipped — team lead,
+      wrote the entire codebase.
+      code: https://github.com/MrEmoji27/EAILS
+
+ №04  ANAMNESIS       tauri · typescript · tiptap     [TESTERS WANTED]
+      private desktop diary — text + voice, all local,
+      ai-readable export for whatever model you trust.
+      product — launching 2026.
+
+ №05  F1 MACHINE LEARNING PROJECT   python · scikit-learn · fastf1
+      gradient-boosted 2026 championship forecasts from five
+      seasons of race data, updated as real races finish.
+
+ №06  TALK TO ZEMO    node · express · sqlite
+      leave a note, come back, find a human reply. no account.
+
+ №07  ZEMO'S VAULT    react · tailwind                [LIVE]
+      lab archive + arcade for cse students.
+      live: https://fantastic-kitsune-24f3b4.netlify.app/
+
+ №08  SWELPT          react native · expo · ios
+      reminders prototype — shelved, lessons kept.
+
+ №09  YTMCLI          python · mpv · terminal ui
+      youtube music in the terminal — keyboard-first, live
+      spectrum visualizer, 10-band eq, five themes.
+
+ №10  THIS SITE       html · css · js — nothing else
+      one hand-written file, no framework, no build step,
+      wcag aa, zero trackers. yes, even this text file.
+
+──────────────────────────────────────────────────────────────────
+ 02 — SKILLS
+──────────────────────────────────────────────────────────────────
+
+ languages   python · typescript · javascript · java · c/c#/c++
+ frontend    react · react native/expo · vite · tailwind · tauri
+ backend     node · fastify · express · fastapi · flask · sqlite
+ realtime    socket.io · webrtc
+ data & ml   scikit-learn · pandas · numpy · cv · ollama/local llms
+ security    e2ee (tweetnacl) · argon2id · jwt · rate limiting
+ agentic ai  ai-augmented engineering · orchestrating agents (claude)
+
+──────────────────────────────────────────────────────────────────
+ 03 — CONTACT
+──────────────────────────────────────────────────────────────────
+
+ email      zemo@tuta.com            (replies within 24–48h)
+ pgp        /pgp.txt · verified on keys.openpgp.org
+            9DB9 4C2F 801B F217 AA15 6643 4120 E017 924C 16F1
+ github     https://github.com/MrEmoji27
+ day job    app dev intern (react native) · since dec 2025
+ status     open to freelance · testers wanted for zolt and
+            anamnesis — say hi.
+
+ no cookies. no trackers. no real name.
+                                          — zemo, 2026

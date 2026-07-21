@@ -1,0 +1,13 @@
+/* TEAM */
+  Operator: zemo (alias)
+  Contact: zemo@tuta.com
+  GitHub: @MrEmoji27
+  Location: Hyderabad, India
+
+/* SITE */
+  Stack: hand-written HTML/CSS/JS — no framework, no build step
+  Fonts: Archivo Black & Space Mono, self-hosted
+  Palette: paper #e8e4d8 · ink #0d0d0b · red #e03418 · blue #1f3fd8 · yellow #f0b800
+  Doctrine: local-first, encrypted, shipped
+  Terminal guests: curl this site's root, or read /zemo.txt
+  Last update: 2026-07-16

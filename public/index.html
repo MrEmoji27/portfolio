@@ -192,11 +192,11 @@
   .hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem}
   .down{
     font-size:.8rem;text-transform:uppercase;letter-spacing:.2em;font-weight:700;
-    text-decoration:none;color:var(--ink);border:3px solid var(--ink);padding:.6em 1em;
-    box-shadow:6px 6px 0 var(--ink);background:var(--paper);
+    text-decoration:none;color:var(--paper);border:3px solid var(--ink);padding:.6em 1em;
+    box-shadow:6px 6px 0 var(--red);background:var(--ink);
     animation:drop .4s steps(3) 1s both;
   }
-  .down:hover{box-shadow:0 0 0 var(--ink);transform:translate(6px,6px)}
+  .down:hover{box-shadow:0 0 0 var(--red);transform:translate(6px,6px)}
 
   .seal{
     width:150px;height:150px;flex-shrink:0;
@@ -540,7 +540,8 @@
     .pulse{font-size:.65rem;padding:.5em .7em}
     .hero-foot{align-items:center}
     .btn-row{width:100%}
-    .down{flex:1;text-align:center;padding:.9em 1em;box-shadow:5px 5px 0 var(--ink)}
+    .down{flex:1;text-align:center;padding:.95em 1em;box-shadow:4px 4px 0 var(--red);font-size:.74rem}
+    .hire{box-shadow:4px 4px 0 var(--ink)}
     .seal{width:82px;height:82px}
     .edge{display:none}
 
@@ -631,8 +632,12 @@
   .pulse:hover{background:var(--ink);color:var(--paper)}
   .pulse b{color:var(--red-deep);font-weight:700}
   .pulse:hover b,body.neg .pulse b{color:var(--yellow)}
-  .hire{background:var(--red-deep);color:#e8e4d8;border-color:var(--ink)}
-  .hire:hover{background:var(--ink)}
+  .hire{
+    background:#e8442a;color:#0d0d0b;border-color:var(--ink);
+    box-shadow:6px 6px 0 var(--ink);
+  }
+  .hire:hover{background:#f45a35;box-shadow:0 0 0 var(--ink)}
+  body.neg .hire{color:#0d0d0b}
   .copy-btn{
     font-family:'Space Mono',monospace;font-weight:700;font-size:.8rem;
     text-transform:uppercase;letter-spacing:.15em;cursor:pointer;

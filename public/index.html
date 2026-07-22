@@ -188,13 +188,15 @@
   .subtitle em{font-style:italic}
   .subtitle .op{background:var(--red);color:var(--paper);padding:0 .35em;font-weight:700}
   @keyframes drop{from{opacity:0;transform:rotate(-1deg) translateY(-30px)}to{opacity:1;transform:rotate(-1deg)}}
+  /* hero buttons slide up but never fade — they must always read as solid, upright CTAs */
+  @keyframes rise{from{transform:translateY(22px)}to{transform:none}}
 
   .hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem}
   .down{
     font-size:.8rem;text-transform:uppercase;letter-spacing:.2em;font-weight:700;
     text-decoration:none;color:var(--paper);border:3px solid var(--ink);padding:.6em 1em;
     box-shadow:6px 6px 0 var(--red);background:var(--ink);
-    animation:drop .4s steps(3) 1s both;
+    animation:rise .45s steps(3) .2s both;
   }
   .down:hover{box-shadow:0 0 0 var(--red);transform:translate(6px,6px)}
 
@@ -354,7 +356,7 @@
   .w-plus{font-family:'Archivo Black',sans-serif;font-size:1.6rem;line-height:1;transition:transform .12s steps(2)}
   li.open .w-plus{transform:rotate(45deg)}
   .w-body{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s steps(6),opacity .2s linear}
-  li.open .w-body{max-height:60em;opacity:1}
+  li.open .w-body{max-height:150em;opacity:1}
   .w-inner{padding:1.8rem 1.6rem 2.2rem;border-top:4px dashed var(--ink);display:grid;grid-template-columns:5.5rem 1fr;gap:2rem}
   .w-inner>div{grid-column:2}
   .w-desc{font-size:.92rem;max-width:64ch;margin-bottom:1.4rem}

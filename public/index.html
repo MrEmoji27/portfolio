@@ -57,12 +57,12 @@
     --ink:#e8e4d8;
   }
   *{margin:0;padding:0;box-sizing:border-box;border-radius:0}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;overflow-x:clip}
   body{
     background:var(--paper);
     color:var(--ink);
     font-family:'Space Mono',monospace;
-    overflow-x:hidden;
+    overflow-x:clip;
     cursor:crosshair;
   }
   a,button,summary{cursor:pointer}
@@ -269,7 +269,7 @@
   .strip.paused .strip-inner,.tk-strip.paused .tk-track{animation-play-state:paused}
   .strip,.tk-strip{cursor:pointer}
   .strip.paused,.tk-strip.paused{outline:3px dashed var(--red);outline-offset:-3px}
-  body.neg .w-shots img{filter:brightness(.85)}
+  body.neg .w-shots img{filter:invert(1)}
 
   @media print{
     #art,body::after,.strip,.strips,.tk-strip,#prog,.top-btn,.seal,.edge,header,.skip,.pulse,.lb,.tm{display:none!important}
@@ -377,10 +377,36 @@
   .w-links .cta:hover{box-shadow:0 0 0 var(--ink);transform:translate(5px,5px)}
 
   /* screenshots */
-  .w-shots{display:flex;gap:1.2rem;overflow-x:auto;margin-bottom:1.8rem;padding:.4rem .4rem 1rem 0}
-  .w-shots a{flex-shrink:0;font-size:0;border:3px solid var(--ink);box-shadow:7px 7px 0 var(--ink);transition:transform .1s linear,box-shadow .1s linear}
-  .w-shots a:hover{transform:translate(-3px,-3px);box-shadow:10px 10px 0 var(--ink)}
-  .w-shots img{height:300px;width:auto;display:block}
+  /* one lead plate per project — a single large duotone figure. the rest of the
+     project's shots stay in the dom (hidden) so the lightbox can page through them;
+     a caption below says how many there are. */
+  .w-shots{display:block;margin-bottom:.5rem;position:relative;max-width:560px}
+  .w-shots a{
+    display:none;position:relative;font-size:0;
+    border:4px solid var(--ink);box-shadow:9px 9px 0 var(--ink);
+    transition:transform .1s linear,box-shadow .1s linear;
+  }
+  .w-shots a:first-child{
+    display:block;width:100%;height:300px;overflow:hidden;
+  }
+  .w-shots a:first-child:hover{transform:translate(-4px,-4px);box-shadow:13px 13px 0 var(--ink)}
+  .w-shots img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+  /* "view all" affordance, injected by js when a project has more than one plate */
+  .w-more{
+    display:inline-flex;align-items:center;gap:.5em;margin:.7rem 0 1.5rem;
+    font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:.12em;cursor:pointer;
+    color:var(--paper);background:var(--ink);border:3px solid var(--ink);
+    padding:.5em 1em;box-shadow:5px 5px 0 var(--red);
+  }
+  .w-more:hover{box-shadow:0 0 0 var(--red);transform:translate(5px,5px)}
+  .w-more:active{box-shadow:none;transform:translate(5px,5px)}
+  /* plate-count stamp on the lead figure */
+  .w-count{
+    position:absolute;top:0;left:0;z-index:1;
+    font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;
+    background:var(--ink);color:var(--paper);padding:.25em .6em;letter-spacing:.1em;
+  }
   .w-badge{
     font-family:'Space Mono',monospace;font-size:.75rem;font-weight:700;font-style:normal;
     letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
@@ -390,9 +416,57 @@
     animation:blink 1.6s steps(2) infinite;
   }
   @media(max-width:700px){
-    .w-shots img{height:210px}
+    .w-shots{max-width:100%}
+    .w-shots a:first-child{height:210px}
     .w-badge{font-size:.6rem;margin-left:.4em}
   }
+
+  /* ================= works ticker ================= */
+  .ticker{overflow:hidden;padding:1rem;border:4px solid var(--ink);background:var(--paper);box-shadow:var(--shadow)}
+  .ticker-track{display:inline-flex;align-items:stretch;animation:tickerslide 60s linear infinite;will-change:transform}
+  .ticker:hover .ticker-track,.ticker.paused .ticker-track{animation-play-state:paused}
+  @keyframes tickerslide{to{transform:translateX(-50%)}}
+  .card{flex:0 0 auto;position:relative;overflow:hidden;padding:0;width:clamp(250px,25vw,330px);height:clamp(340px,55vh,520px);margin:0 .6rem;border:3px solid var(--ink);background:#0d0d0b;box-shadow:6px 6px 0 var(--ink);cursor:pointer;transition:transform .12s linear,box-shadow .12s linear}
+  .card:hover,.card:focus-visible{transform:translate(-4px,-4px);box-shadow:11px 11px 0 var(--red);outline:none}
+  .card.active{box-shadow:6px 6px 0 var(--red)}
+  .card-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .35s ease}
+  .card:hover .card-media{transform:scale(1.06)}
+  .card::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,11,.95) 4%,rgba(13,13,11,.55) 32%,rgba(13,13,11,.04) 64%);pointer-events:none}
+  .card-ghost{position:absolute;top:-.08em;right:.02em;z-index:0;font-family:'Archivo Black',sans-serif;font-size:12rem;line-height:1;color:transparent;-webkit-text-stroke:3px #e8e4d8;opacity:.16;pointer-events:none}
+  .card-body{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:1.1rem 1.05rem;display:flex;flex-direction:column;gap:.28rem;text-align:left}
+  .card-n{font-family:'Archivo Black',sans-serif;font-size:1.1rem;line-height:1;color:var(--red)}
+  .card-name{font-family:'Archivo Black',sans-serif;font-size:clamp(1.35rem,1.7vw,1.9rem);line-height:.95;text-transform:uppercase;letter-spacing:-.01em;color:#e8e4d8;text-shadow:2px 2px 0 rgba(13,13,11,.7)}
+  .card-tag{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#e8e4d8;opacity:.82}
+  .card-flag{align-self:flex-start;margin-top:.3rem;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;background:var(--red-deep);color:#e8e4d8;padding:.22em .55em;animation:blink 1.6s steps(2) infinite}
+  .ticker.paused{outline:3px dashed var(--red);outline-offset:-3px}
+
+  .works-detail{position:relative}
+  .wd{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s steps(8),opacity .2s linear}
+  .wd.open{max-height:240em;opacity:1;margin-top:1.6rem}
+  .wd-inner{position:relative;border:4px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);padding:2rem 2rem 2.3rem}
+  .wd-close{position:absolute;top:0;right:0;font-family:'Space Mono',monospace;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--paper);background:var(--ink);border:0;padding:.5em .8em;cursor:pointer}
+  .wd-close:hover{background:var(--red-deep);color:#e8e4d8}
+  .wd-head{border-bottom:4px solid var(--ink);padding-bottom:1.1rem;margin-bottom:1.4rem;padding-right:5rem}
+  .wd-head .slide-num{font-family:'Archivo Black',sans-serif;font-size:1rem;background:var(--ink);color:var(--paper);padding:.25em .5em;margin-right:.7rem;display:inline-block;vertical-align:middle}
+  .wd-head .w-name{font-family:'Archivo Black',sans-serif;font-size:clamp(1.7rem,4vw,2.8rem);line-height:1;text-transform:uppercase;letter-spacing:-.02em;color:var(--ink);display:inline;vertical-align:middle}
+  .wd-head .w-tag{display:inline-block;margin-left:.6rem;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;background:var(--red-deep);color:#e8e4d8;padding:.3em .6em;vertical-align:middle}
+  .wd-head .w-tease{margin-top:.7rem;font-size:.92rem;opacity:.8;font-style:italic}
+  @media(hover:none){.card:hover{transform:none;box-shadow:6px 6px 0 var(--ink)}.card:hover .card-media{transform:none}}
+  @media(max-width:700px){
+    .ticker{padding:.7rem}
+    .card{width:clamp(210px,64vw,250px);height:clamp(300px,52vh,380px);margin:0 .4rem;box-shadow:5px 5px 0 var(--ink)}
+    .card-name{font-size:clamp(1.2rem,6.4vw,1.7rem)}
+    .card-ghost{font-size:9rem}
+    .card-body{padding:.9rem .85rem}
+    .wd.open{margin-top:1.1rem}
+    .wd-inner{padding:1.4rem 1.1rem 1.8rem}
+    .wd-head{padding-right:4.4rem;padding-bottom:.9rem;margin-bottom:1.1rem}
+    .wd-head .w-name{font-size:clamp(1.3rem,7vw,2rem);display:block;margin-top:.4rem}
+    .wd-head .slide-num{font-size:.85rem}
+    .wd-head .w-tag{display:inline-block;margin-left:0;margin-top:.5rem;font-size:.62rem}
+    .wd-close{min-height:44px;display:inline-flex;align-items:center}
+  }
+  @media(prefers-reduced-motion:reduce){.ticker{overflow-x:auto;-webkit-overflow-scrolling:touch}.ticker-track{animation:none}.card:hover .card-media{transform:none}}
 
   /* ================= lightbox ================= */
   .lb{
@@ -478,7 +552,7 @@
   .contact-row a:hover{background:var(--ink);color:var(--paper)}
   .contact-label{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.25em;opacity:.7;margin-bottom:.5rem;font-weight:700}
   .big-mail{
-    display:inline-block;margin-top:6vh;
+    display:inline-block;margin-top:6vh;max-width:100%;overflow-wrap:anywhere;
     font-family:'Archivo Black',sans-serif;
     font-size:clamp(1.2rem,4.4vw,3.2rem);
     text-transform:uppercase;color:var(--paper);background:var(--ink);
@@ -563,7 +637,7 @@
     .w-links{gap:.7rem}
     .w-links a,.w-links .cta,.w-links .na{padding:.7em 1em;font-size:.72rem}
     /* screenshots swipe with snap instead of drifting mid-image */
-    .w-shots{scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;gap:.9rem}
+    .w-shots{gap:.8rem}
     .w-shots a{scroll-snap-align:center;box-shadow:5px 5px 0 var(--ink)}
     .method{box-shadow:7px 7px 0 var(--ink);padding:1.5rem}
     .method-grid{gap:1.6rem}
@@ -572,7 +646,13 @@
 
     /* contact + footer */
     .statement{font-size:clamp(1.5rem,7vw,2.4rem)}
-    .big-mail{font-size:.95rem;box-shadow:7px 7px 0 var(--red);padding:.6em .8em}
+    .big-mail{
+      font-size:.9rem;box-shadow:6px 6px 0 var(--red);padding:.55em .75em;
+      transform:none;max-width:100%;line-height:1.15;
+    }
+    .big-mail:hover{transform:none;box-shadow:6px 6px 0 var(--red)}
+    /* the email+copy row must not force width */
+    .end>div>div:first-of-type{max-width:100%;flex-wrap:wrap}
     .copy-btn{margin-left:0;padding:.7em 1.1em}
     .contact-row{gap:1.6rem;margin-top:5vh}
     .colophon{
@@ -831,18 +911,120 @@
 
   <!-- ================= catalogue ================= -->
   <section id="works" data-num="02">
-    <div class="sec-head reveal"><h2>02 — selected works</h2><span>2024 — 2026 · click to open</span></div>
-    <ol>
-
-      <li class="reveal" style="--d:.0s" data-w="zoro">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">Zoro</span>
-          <span class="w-tag">fastapi · react · ollama</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">ai chat that never touches the cloud</span>
+    <div class="sec-head reveal"><h2>02 — selected works</h2><span>2024 — 2026 · a moving index — tap any work to open it</span></div>
+    <div class="ticker reveal" id="wticker" aria-label="selected works — a moving index; tap a work to open it">
+      <div class="ticker-track" id="wtrack">
+        <button class="card" data-w="zoro" type="button" aria-label="open Zoro">
+          <img class="card-media" src="img/zoro-terminal.png" alt="" loading="lazy">
+          <span class="card-body">
+            <span class="card-n">01</span>
+            <span class="card-name">Zoro</span>
+            <span class="card-tag">fastapi · react · ollama</span>
+            
+          </span>
         </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">a terminal-styled AI chat app that runs entirely on your own machine — no cloud, no accounts. built to make small local models genuinely useful by managing their memory carefully.</p>
+        <button class="card" data-w="zolt" type="button" aria-label="open Zolt">
+          <img class="card-media" src="img/zolt-landing.jpg" alt="" loading="lazy">
+          <span class="card-body">
+            <span class="card-n">02</span>
+            <span class="card-name">Zolt</span>
+            <span class="card-tag">react native · fastify · nacl</span>
+            <span class="card-flag">testers wanted</span>
+          </span>
+        </button>
+        <button class="card" data-w="eails" type="button" aria-label="open EAILS">
+          <img class="card-media" src="img/eails-learn.jpg" alt="" loading="lazy">
+          <span class="card-body">
+            <span class="card-n">03</span>
+            <span class="card-name">EAILS</span>
+            <span class="card-tag">flask · computer vision · gemini</span>
+            
+          </span>
+        </button>
+        <button class="card" data-w="chronicle" type="button" aria-label="open Anamnesis">
+          <img class="card-media" src="img/anamnesis-main.jpg" alt="" loading="lazy">
+          <span class="card-body">
+            <span class="card-n">04</span>
+            <span class="card-name">Anamnesis</span>
+            <span class="card-tag">tauri · typescript · tiptap</span>
+            <span class="card-flag">testers wanted</span>
+          </span>
+        </button>
+        <button class="card" data-w="f1ml" type="button" aria-label="open F1 Machine Learning project">
+          <img class="card-media" src="img/f1-predictions.jpg" alt="" loading="lazy">
+          <span class="card-body">
+            <span class="card-n">05</span>
+            <span class="card-name">F1 Machine Learning project</span>
+            <span class="card-tag">python · scikit-learn · fastf1</span>
+            
+          </span>
+        </button>
+        <button class="card" data-w="ttz" type="button" aria-label="open Talk to Zemo">
+          <img class="card-media" src="img/ttz-landing.jpg" alt="" loading="lazy">
+          <span class="card-body">
+            <span class="card-n">06</span>
+            <span class="card-name">Talk to Zemo</span>
+            <span class="card-tag">node · express · sqlite</span>
+            
+          </span>
+        </button>
+        <button class="card card--noimg" data-w="vault" type="button" aria-label="open Zemo's Vault">
+          <span class="card-ghost" aria-hidden="true">07</span>
+          <span class="card-body">
+            <span class="card-n">07</span>
+            <span class="card-name">Zemo's Vault</span>
+            <span class="card-tag">react · tailwind</span>
+            
+          </span>
+        </button>
+        <button class="card card--noimg" data-w="swelpt" type="button" aria-label="open Swelpt">
+          <span class="card-ghost" aria-hidden="true">08</span>
+          <span class="card-body">
+            <span class="card-n">08</span>
+            <span class="card-name">Swelpt</span>
+            <span class="card-tag">react native · expo · ios</span>
+            
+          </span>
+        </button>
+        <button class="card" data-w="ytmcli" type="button" aria-label="open ytmcli">
+          <img class="card-media" src="img/ytmcli-themes.png" alt="" loading="lazy">
+          <span class="card-body">
+            <span class="card-n">09</span>
+            <span class="card-name">ytmcli</span>
+            <span class="card-tag">python · mpv · terminal ui</span>
+            
+          </span>
+        </button>
+        <button class="card card--noimg" data-w="spektr" type="button" aria-label="open spektr">
+          <span class="card-ghost" aria-hidden="true">10</span>
+          <span class="card-body">
+            <span class="card-n">10</span>
+            <span class="card-name">spektr</span>
+            <span class="card-tag">python · numpy · textual</span>
+            
+          </span>
+        </button>
+        <button class="card card--noimg" data-w="site" type="button" aria-label="open This Site">
+          <span class="card-ghost" aria-hidden="true">11</span>
+          <span class="card-body">
+            <span class="card-n">11</span>
+            <span class="card-name">This Site</span>
+            <span class="card-tag">html · css · js — nothing else</span>
+            
+          </span>
+        </button>
+      </div>
+    </div>
+    <div class="works-detail" id="wdetail">
+      <div class="wd" data-w="zoro">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close Zoro">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;01</span><h3 class="w-name">Zoro</h3><span class="w-tag">fastapi · react · ollama</span>
+            <p class="w-tease">ai chat that never touches the cloud</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">a terminal-styled AI chat app that runs entirely on your own machine — no cloud, no accounts. built to make small local models genuinely useful by managing their memory carefully.</p>
           <ul class="w-feats">
             <li>streaming chat with persistent, switchable sessions backed by sqlite</li>
             <li>long-term memory with pinning, categories, and message→memory capture from the ui</li>
@@ -851,22 +1033,22 @@
             <li>slash commands and a live status bar — model, persona, latency, tokens/sec</li>
           </ul>
           <div class="w-shots">
-            <a href="img/zoro-terminal.png" target="_blank" rel="noopener"><img src="img/zoro-terminal.png" alt="zoro's terminal interface — green phosphor styling with a halftone skull and a live model status bar" loading="lazy"></a>
+            <a href="img/zoro-terminal.png" target="_blank" rel="noopener"><img src="img/zoro-terminal-duo.png" alt="zoro's terminal interface — green phosphor styling with a halftone skull and a live model status bar" loading="lazy"></a>
           </div>
           <p class="fig" aria-hidden="true">fig. 01 — session start, running qwen3.5 locally</p>
           <div class="w-links"><a href="https://github.com/MrEmoji27/zore" target="_blank" rel="noopener">code →</a></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.05s" data-w="zolt">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">Zolt <i class="w-badge">testers wanted</i></span>
-          <span class="w-tag">react native · fastify · nacl</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">encrypted messenger — the server can't read a thing</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">an end-to-end encrypted messaging app. the server only passes messages along — it can never read them. your conversation history lives on your device and nowhere else. this one's a product, not a side project — launching later this year.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="zolt">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close Zolt">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;02</span><h3 class="w-name">Zolt <i class="w-badge">testers wanted</i></h3><span class="w-tag">react native · fastify · nacl</span>
+            <p class="w-tease">encrypted messenger — the server can't read a thing</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">an end-to-end encrypted messaging app. the server only passes messages along — it can never read them. your conversation history lives on your device and nowhere else. this one's a product, not a side project — launching later this year.</p>
           <ul class="w-feats">
             <li>nacl.box encryption on-device; identity keys never leave secure storage</li>
             <li>instant delivery via socket.io; messages for offline users held encrypted up to 72 hours, then auto-deleted</li>
@@ -874,24 +1056,24 @@
             <li>argon2id-derived pin unlock; full history in client-side sqlite</li>
           </ul>
           <div class="w-shots">
-            <a href="img/zolt-landing.jpg" target="_blank" rel="noopener"><img src="img/zolt-landing.jpg" alt="zolt landing screen — private, encrypted, invite-only" loading="lazy"></a>
-            <a href="img/zolt-home-dark.jpg" target="_blank" rel="noopener"><img src="img/zolt-home-dark.jpg" alt="zolt home screen in the dark terminal theme" loading="lazy"></a>
-            <a href="img/zolt-settings.jpg" target="_blank" rel="noopener"><img src="img/zolt-settings.jpg" alt="zolt settings — privacy, disappearing messages, and bluetooth mesh relay" loading="lazy"></a>
+            <a href="img/zolt-landing.jpg" target="_blank" rel="noopener"><img src="img/zolt-landing-duo.png" alt="zolt landing screen — private, encrypted, invite-only" loading="lazy"></a>
+            <a href="img/zolt-home-dark.jpg" target="_blank" rel="noopener"><img src="img/zolt-home-dark-duo.png" alt="zolt home screen in the dark terminal theme" loading="lazy"></a>
+            <a href="img/zolt-settings.jpg" target="_blank" rel="noopener"><img src="img/zolt-settings-duo.png" alt="zolt settings — privacy, disappearing messages, and bluetooth mesh relay" loading="lazy"></a>
           </div>
           <p class="fig" aria-hidden="true">fig. 01–03 — landing · dark home · settings</p>
           <div class="w-links"><a class="cta" data-app="zolt" href="mailto:zemo@tuta.com?subject=i%20want%20to%20test%20zolt">join the private beta →</a><span class="na">product · launching 2026</span></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.1s" data-w="eails">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">EAILS</span>
-          <span class="w-tag">flask · computer vision · gemini</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">webcam-aware learning that adapts to attention</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">a smart learning tool that measures how engaged a student is through their webcam during video lessons, then generates personalised quizzes and adjusts the learning pace to match.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="eails">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close EAILS">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;03</span><h3 class="w-name">EAILS</h3><span class="w-tag">flask · computer vision · gemini</span>
+            <p class="w-tease">webcam-aware learning that adapts to attention</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">a smart learning tool that measures how engaged a student is through their webcam during video lessons, then generates personalised quizzes and adjusts the learning pace to match.</p>
           <ul class="w-feats">
             <li>live ocular telemetry — gaze focus, blink rate, and head pose scored into one engagement number</li>
             <li>personalised quiz generation via the gemini api, tuned by engagement data</li>
@@ -900,26 +1082,26 @@
             <li>my role: team lead — designed the architecture and wrote the entire codebase</li>
           </ul>
           <div class="w-shots">
-            <a href="img/eails-learn.jpg" target="_blank" rel="noopener"><img src="img/eails-learn.jpg" alt="eails learn view — video session with live engagement and gaze-focus metrics" loading="lazy"></a>
-            <a href="img/eails-dashboard.jpg" target="_blank" rel="noopener"><img src="img/eails-dashboard.jpg" alt="eails dashboard — session analytics, diagnostic timeline, evaluation score, and ocular telemetry" loading="lazy"></a>
-            <a href="img/eails-quiz.jpg" target="_blank" rel="noopener"><img src="img/eails-quiz.jpg" alt="eails knowledge verification — a generated multiple-choice question with progress and timer" loading="lazy"></a>
-            <a href="img/eails-light.jpg" target="_blank" rel="noopener"><img src="img/eails-light.jpg" alt="eails in light mode — the same interface in a high-contrast brutalist theme" loading="lazy"></a>
-            <a href="img/eails-pipeline.jpg" target="_blank" rel="noopener"><img src="img/eails-pipeline.jpg" alt="eails computer-vision pipeline — from webcam frame to weighted engagement score" loading="lazy"></a>
+            <a href="img/eails-learn.jpg" target="_blank" rel="noopener"><img src="img/eails-learn-duo.png" alt="eails learn view — video session with live engagement and gaze-focus metrics" loading="lazy"></a>
+            <a href="img/eails-dashboard.jpg" target="_blank" rel="noopener"><img src="img/eails-dashboard-duo.png" alt="eails dashboard — session analytics, diagnostic timeline, evaluation score, and ocular telemetry" loading="lazy"></a>
+            <a href="img/eails-quiz.jpg" target="_blank" rel="noopener"><img src="img/eails-quiz-duo.png" alt="eails knowledge verification — a generated multiple-choice question with progress and timer" loading="lazy"></a>
+            <a href="img/eails-light.jpg" target="_blank" rel="noopener"><img src="img/eails-light-duo.png" alt="eails in light mode — the same interface in a high-contrast brutalist theme" loading="lazy"></a>
+            <a href="img/eails-pipeline.jpg" target="_blank" rel="noopener"><img src="img/eails-pipeline-duo.png" alt="eails computer-vision pipeline — from webcam frame to weighted engagement score" loading="lazy"></a>
           </div>
           <p class="fig" aria-hidden="true">fig. 01–05 — session · dashboard · quiz · light mode · frame-to-score pipeline</p>
           <div class="w-links"><a href="https://github.com/MrEmoji27/EAILS" target="_blank" rel="noopener">code →</a></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.15s" data-w="chronicle">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">Anamnesis <i class="w-badge">testers wanted</i></span>
-          <span class="w-tag">tauri · typescript · tiptap</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">a diary that keeps everything on your machine</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">a private desktop diary for written and voice journaling. everything stays on your computer, nothing is sent anywhere — and you can export your history to use with any AI you personally trust. currently at v0.7.9 alpha, launching as a product later this year.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="chronicle">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close Anamnesis">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;04</span><h3 class="w-name">Anamnesis <i class="w-badge">testers wanted</i></h3><span class="w-tag">tauri · typescript · tiptap</span>
+            <p class="w-tease">a diary that keeps everything on your machine</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">a private desktop diary for written and voice journaling. everything stays on your computer, nothing is sent anywhere — and you can export your history to use with any AI you personally trust. currently at v0.7.9 alpha, launching as a product later this year.</p>
           <ul class="w-feats">
             <li>voice notes transcribed on-device with local whisper models — nothing leaves your machine</li>
             <li>rich-text entries with classic, freeform, and magazine layouts</li>
@@ -927,24 +1109,24 @@
             <li>24 themes from parchment to vantablack — journaling should feel like yours</li>
           </ul>
           <div class="w-shots">
-            <a href="img/anamnesis-main.jpg" target="_blank" rel="noopener"><img src="img/anamnesis-main.jpg" alt="anamnesis (v0.6.0 pre-alpha) — a diary entry with calendar, rich-text editor, and voice notes transcribed locally" loading="lazy"></a>
-            <a href="img/anamnesis-themes.jpg" target="_blank" rel="noopener"><img src="img/anamnesis-themes.jpg" alt="anamnesis theme picker — 24 themes from parchment and sepia to dracula and vantablack" loading="lazy"></a>
-            <a href="img/anamnesis-about.jpg" target="_blank" rel="noopener"><img src="img/anamnesis-about.jpg" alt="anamnesis about screen — no cloud, no account, no tracking; your memories belong to you" loading="lazy"></a>
+            <a href="img/anamnesis-main.jpg" target="_blank" rel="noopener"><img src="img/anamnesis-main-duo.png" alt="anamnesis (v0.6.0 pre-alpha) — a diary entry with calendar, rich-text editor, and voice notes transcribed locally" loading="lazy"></a>
+            <a href="img/anamnesis-themes.jpg" target="_blank" rel="noopener"><img src="img/anamnesis-themes-duo.png" alt="anamnesis theme picker — 24 themes from parchment and sepia to dracula and vantablack" loading="lazy"></a>
+            <a href="img/anamnesis-about.jpg" target="_blank" rel="noopener"><img src="img/anamnesis-about-duo.png" alt="anamnesis about screen — no cloud, no account, no tracking; your memories belong to you" loading="lazy"></a>
           </div>
           <p class="fig" aria-hidden="true">fig. 01–03 — diary &amp; voice notes · themes · about (v0.6.0)</p>
           <div class="w-links"><a class="cta" data-app="anamnesis" href="mailto:zemo@tuta.com?subject=i%20want%20to%20test%20anamnesis">join the private beta →</a><span class="na">product · launching 2026</span></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.2s" data-w="f1ml">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">F1 Machine Learning project</span>
-          <span class="w-tag">python · scikit-learn · fastf1</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">predicting the 2026 f1 season with ml</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">a machine-learning model that predicts the 2026 formula 1 championship using five years of real race data — and updates its forecast as each new race finishes.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="f1ml">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close F1 Machine Learning project">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;05</span><h3 class="w-name">F1 Machine Learning project</h3><span class="w-tag">python · scikit-learn · fastf1</span>
+            <p class="w-tease">predicting the 2026 f1 season with ml</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">a machine-learning model that predicts the 2026 formula 1 championship using five years of real race data — and updates its forecast as each new race finishes.</p>
           <ul class="w-feats">
             <li>data pipeline over fastf1 covering the 2021–2025 seasons</li>
             <li>gradient-boosting model, tested properly with time-series cross-validation</li>
@@ -952,22 +1134,22 @@
             <li>charts the full championship forecast for the 2026 driver grid</li>
           </ul>
           <div class="w-shots">
-            <a href="img/f1-predictions.jpg" target="_blank" rel="noopener"><img src="img/f1-predictions.jpg" alt="predicted 2026 f1 championship — top 10 drivers, feature importance, and model fit charts" loading="lazy"></a>
+            <a href="img/f1-predictions.jpg" target="_blank" rel="noopener"><img src="img/f1-predictions-duo.png" alt="predicted 2026 f1 championship — top 10 drivers, feature importance, and model fit charts" loading="lazy"></a>
           </div>
           <p class="fig" aria-hidden="true">fig. 01 — 2026 championship forecast &amp; model diagnostics</p>
           <div class="w-links"><span class="na">personal research — code private</span></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.25s" data-w="ttz">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">Talk to Zemo</span>
-          <span class="w-tag">node · express · sqlite</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">leave a note, get a human reply — no account</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">a little messaging site where anyone can leave me a note, come back later on the same device, and find my reply waiting — no account or sign-up needed.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="ttz">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close Talk to Zemo">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;06</span><h3 class="w-name">Talk to Zemo</h3><span class="w-tag">node · express · sqlite</span>
+            <p class="w-tease">leave a note, get a human reply — no account</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">a little messaging site where anyone can leave me a note, come back later on the same device, and find my reply waiting — no account or sign-up needed.</p>
           <ul class="w-feats">
             <li>visitor thread continuity via localstorage + cookies — no accounts</li>
             <li>honeypot spam traps and rate-limited endpoints</li>
@@ -975,22 +1157,22 @@
             <li>terminal-styled responsive ui with dark/light persistence</li>
           </ul>
           <div class="w-shots">
-            <a href="img/ttz-landing.jpg" target="_blank" rel="noopener"><img src="img/ttz-landing.jpg" alt="talk to zemo landing page — a quiet terminal for strangers" loading="lazy"></a>
+            <a href="img/ttz-landing.jpg" target="_blank" rel="noopener"><img src="img/ttz-landing-duo.png" alt="talk to zemo landing page — a quiet terminal for strangers" loading="lazy"></a>
           </div>
           <p class="fig" aria-hidden="true">fig. 01 — a quiet terminal for strangers</p>
           <div class="w-links"><span class="na">launching soon</span></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.3s" data-w="vault">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">Zemo's Vault</span>
-          <span class="w-tag">react · tailwind</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">lab archive + arcade — live and in use</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">a lab archive and arcade for computer science students. browse academic year &gt; subject &gt; experiment to find code with outputs — then take a break in arcade mode.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="vault">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close Zemo's Vault">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;07</span><h3 class="w-name">Zemo's Vault</h3><span class="w-tag">react · tailwind</span>
+            <p class="w-tease">lab archive + arcade — live and in use</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">a lab archive and arcade for computer science students. browse academic year &gt; subject &gt; experiment to find code with outputs — then take a break in arcade mode.</p>
           <ul class="w-feats">
             <li>multi-layer selector for years, subjects, and experiments with syntax-highlighted code</li>
             <li>arcade mode with retro mini-games — snake, tetris, chess, even doom</li>
@@ -998,35 +1180,35 @@
             <li>live and in use by students</li>
           </ul>
           <div class="w-links"><a href="https://fantastic-kitsune-24f3b4.netlify.app/" target="_blank" rel="noopener">live →</a></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.35s" data-w="swelpt">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">Swelpt</span>
-          <span class="w-tag">react native · expo · ios</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">ios reminders prototype — shelved, lessons kept</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">an ios-focused task manager and reminder app. built as a prototype and later shelved — but it did its job as a proving ground for mobile notifications.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="swelpt">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close Swelpt">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;08</span><h3 class="w-name">Swelpt</h3><span class="w-tag">react native · expo · ios</span>
+            <p class="w-tease">ios reminders prototype — shelved, lessons kept</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">an ios-focused task manager and reminder app. built as a prototype and later shelved — but it did its job as a proving ground for mobile notifications.</p>
           <ul class="w-feats">
             <li>tasks with scheduled reminder notifications</li>
             <li>designed ios-first, built with react native + expo</li>
           </ul>
           <div class="w-links"><span class="na">prototype — shelved</span></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.35s" data-w="ytmcli">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">ytmcli</span>
-          <span class="w-tag">python · mpv · terminal ui</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">youtube music in the terminal — with a live visualizer</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">a keyboard-first youtube music client for the terminal — and an excuse to write a real audio visualizer. ~1,400 lines of python. the player and visualizer work; the sign-in path broke when the unofficial api changed, so search and library are down until i rebuild it.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="ytmcli">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close ytmcli">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;09</span><h3 class="w-name">ytmcli</h3><span class="w-tag">python · mpv · terminal ui</span>
+            <p class="w-tease">youtube music in the terminal — with a live visualizer</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">a keyboard-first youtube music client for the terminal — and an excuse to write a real audio visualizer. ~1,400 lines of python. the player and visualizer work; the sign-in path broke when the unofficial api changed, so search and library are down until i rebuild it.</p>
           <ul class="w-feats">
             <li>the centrepiece: a 2048-point fft spectrum analyser across ten bands (20 hz – 20 khz), drawn with braille sub-characters for extra vertical resolution</li>
             <li>eight visualiser modes — bars, bricks, columns, wave, scatter, flame, retro, pulse — with intensity-mapped colour</li>
@@ -1036,24 +1218,24 @@
             <li>the visualiser outlived it — extracted and rebuilt as <b>spektr</b>, № 10 below</li>
           </ul>
           <div class="w-shots">
-            <a href="img/ytmcli-themes.png" target="_blank" rel="noopener"><img src="img/ytmcli-themes.png" alt="ytmcli theme picker — a searchable list of more than thirty terminal themes" loading="lazy"></a>
-            <a href="img/ytmcli-matrix.png" target="_blank" rel="noopener"><img src="img/ytmcli-matrix.png" alt="ytmcli search view in the matrix theme, with the keybinding bar along the bottom" loading="lazy"></a>
-            <a href="img/ytmcli-palette.png" target="_blank" rel="noopener"><img src="img/ytmcli-palette.png" alt="ytmcli command palette — searchable commands for keys, theme, and screenshots" loading="lazy"></a>
+            <a href="img/ytmcli-themes.png" target="_blank" rel="noopener"><img src="img/ytmcli-themes-duo.png" alt="ytmcli theme picker — a searchable list of more than thirty terminal themes" loading="lazy"></a>
+            <a href="img/ytmcli-matrix.png" target="_blank" rel="noopener"><img src="img/ytmcli-matrix-duo.png" alt="ytmcli search view in the matrix theme, with the keybinding bar along the bottom" loading="lazy"></a>
+            <a href="img/ytmcli-palette.png" target="_blank" rel="noopener"><img src="img/ytmcli-palette-duo.png" alt="ytmcli command palette — searchable commands for keys, theme, and screenshots" loading="lazy"></a>
           </div>
           <p class="fig" aria-hidden="true">fig. 01–03 — theme picker · search in matrix · command palette</p>
           <div class="w-links"><span class="na">unfinished — auth rebuild pending</span></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.38s" data-w="spektr">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">spektr</span>
-          <span class="w-tag">python · numpy · textual</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">a spectrum analyser that lives in your terminal</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">play music anywhere — spotify, a browser tab, a game — and spektr draws it in the terminal. it started as the visualiser inside ytmcli, turned out to be the best part of that project and the only part that didn't depend on anyone's api, so it moved out and got its own name.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="spektr">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close spektr">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;10</span><h3 class="w-name">spektr</h3><span class="w-tag">python · numpy · textual</span>
+            <p class="w-tease">a spectrum analyser that lives in your terminal</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">play music anywhere — spotify, a browser tab, a game — and spektr draws it in the terminal. it started as the visualiser inside ytmcli, turned out to be the best part of that project and the only part that didn't depend on anyone's api, so it moved out and got its own name.</p>
           <ul class="w-feats">
             <li>2048-point fft across ten bands, 20 hz to 20 khz, straight off the system's output</li>
             <li>braille sub-character rendering — four times the vertical resolution of a text cell</li>
@@ -1062,18 +1244,18 @@
             <li>auto-finds the right audio source: wasapi loopback, stereo mix, or a monitor device</li>
           </ul>
           <div class="w-links"><span class="na">shipping soon — public repo &amp; pip install</span></div>
-        </div></div></div>
-      </li>
-
-      <li class="reveal" style="--d:.4s" data-w="site">
-        <button class="w-head" aria-expanded="false">
-          <span class="w-name">This Site</span>
-          <span class="w-tag">html · css · js — nothing else</span>
-          <span class="w-plus">+</span>
-          <span class="w-tease">the portfolio is also the work sample</span>
-        </button>
-        <div class="w-body"><div class="w-inner"><div>
-          <p class="w-desc">what you're looking at. one hand-written html file — no framework, no build step, no dependencies. every design decision on this page is a decision i'd make on yours.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wd" data-w="site">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close This Site">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;11</span><h3 class="w-name">This Site</h3><span class="w-tag">html · css · js — nothing else</span>
+            <p class="w-tease">the portfolio is also the work sample</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">what you're looking at. one hand-written html file — no framework, no build step, no dependencies. every design decision on this page is a decision i'd make on yours.</p>
           <ul class="w-feats">
             <li>single self-contained page, ~80 kb of hand-written html/css/js</li>
             <li>wcag 2.1 aa audited — contrast, keyboard, headings, reduced-motion all pass</li>
@@ -1081,10 +1263,10 @@
             <li>curl the url from a terminal and you get an ascii version instead</li>
           </ul>
           <div class="w-links"><a href="zemo.txt">ascii version →</a><span class="na">right-click → view source. go on.</span></div>
-        </div></div></div>
-      </li>
-
-    </ol>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ================= what i do ================= -->
@@ -1205,28 +1387,61 @@
     });
   }
 
-  /* ---- accordion catalogue ---- */
-  var items = document.querySelectorAll('#works ol > li[data-w]');
-  items.forEach(function(li){
-    var btn = li.querySelector('.w-head');
-    btn.addEventListener('click', function(){
-      var wasOpen = li.classList.contains('open');
-      items.forEach(function(o){ o.classList.remove('open'); o.querySelector('.w-head').setAttribute('aria-expanded','false'); });
-      if(!wasOpen){
-        li.classList.add('open');
-        btn.setAttribute('aria-expanded','true');
-        lite(li.dataset.w);
-        setTimeout(function(){
-          var y = li.getBoundingClientRect().top + window.scrollY - 64;
-          window.scrollTo({top: y, behavior: 'smooth'});
-        }, 140);
-      } else {
-        lite(null);
-      }
+  /* ---- works ticker + click-to-open ---- */
+  (function(){
+    var ticker = document.getElementById('wticker');
+    if(!ticker) return;
+    var track  = document.getElementById('wtrack');
+    var detail = document.getElementById('wdetail');
+    var panels = {};
+    Array.prototype.forEach.call(detail.querySelectorAll('.wd'), function(p){ panels[p.dataset.w] = p; });
+    var openW = null, worksInView = false;
+
+    /* duplicate the chip row so the marquee loops seamlessly (CSS translateX -50%) */
+    Array.prototype.slice.call(track.children).forEach(function(c){
+      var clone = c.cloneNode(true);
+      clone.setAttribute('aria-hidden','true'); clone.tabIndex = -1; clone.dataset.clone = '1';
+      track.appendChild(clone);
     });
-    li.addEventListener('mouseenter', function(){ if(!document.querySelector('#works li.open')) lite(li.dataset.w); });
-    li.addEventListener('mouseleave', function(){ if(!document.querySelector('#works li.open')) lite(null); });
-  });
+    function markActive(w){
+      Array.prototype.forEach.call(track.children, function(c){ c.classList.toggle('active', w !== null && c.dataset.w === w); });
+    }
+    function openWork(w){
+      if(openW === w){ closeWork(); return; }
+      Object.keys(panels).forEach(function(k){ panels[k].classList.toggle('open', k === w); });
+      openW = w; markActive(w);
+      if(worksInView) lite(w);
+      var p = panels[w];
+      p.querySelectorAll('img[loading="lazy"]').forEach(function(im){ im.loading = 'eager'; });
+      setTimeout(function(){
+        var y = p.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({top: y, behavior: 'smooth'});
+        var cb = p.querySelector('.wd-close'); if(cb) cb.focus({preventScroll:true});
+      }, 120);
+    }
+    function closeWork(){
+      if(openW && panels[openW]) panels[openW].classList.remove('open');
+      openW = null; markActive(null);
+      if(worksInView) lite(null);
+    }
+    track.addEventListener('click', function(e){ var card = e.target.closest('.card'); if(card) openWork(card.dataset.w); });
+    detail.addEventListener('click', function(e){ if(e.target.closest('.wd-close')) closeWork(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && openW) closeWork(); });
+
+    /* marquee is a CSS animation that pauses on :hover; on touch, pause briefly so a tap lands cleanly */
+    var holdT;
+    ticker.addEventListener('touchstart', function(){
+      ticker.classList.add('paused'); clearTimeout(holdT);
+      holdT = setTimeout(function(){ ticker.classList.remove('paused'); }, 3200);
+    }, {passive:true});
+
+    /* light the matching background shape only while the works section is on screen */
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        es.forEach(function(en){ worksInView = en.isIntersecting; lite(worksInView && openW ? openW : null); });
+      }, {threshold:.15}).observe(document.getElementById('works'));
+    }
+  })();
 
   /* ---- duplicate the materials track for a seamless loop ---- */
   var track = document.querySelector('.tk-track');
@@ -1325,16 +1540,30 @@
   function lbHide(){ lb.classList.remove('on'); lbImg.src=''; if(lbOpener){ lbOpener.focus(); lbOpener = null; } }
   document.querySelectorAll('.w-shots').forEach(function(shots){
     var links = shots.querySelectorAll('a');
-    links.forEach(function(a, i){
-      a.addEventListener('click', function(e){
-        e.preventDefault();
-        lbOpener = a;
-        gallery = Array.prototype.map.call(links, function(l){
-          return {href: l.getAttribute('href'), alt: l.querySelector('img').alt};
-        });
-        lbShow(i);
+    function openAt(i){
+      lbOpener = links[0];
+      gallery = Array.prototype.map.call(links, function(l){
+        return {href: l.getAttribute('href'), alt: l.querySelector('img').alt};
       });
+      lbShow(i);
+    }
+    links.forEach(function(a, i){
+      a.addEventListener('click', function(e){ e.preventDefault(); openAt(i); });
     });
+    // one lead plate is shown; the rest live behind a "view all" button
+    if(links.length > 1){
+      var lead = links[0];
+      lead.insertAdjacentHTML('afterbegin',
+        '<span class="w-count" aria-hidden="true">01 / ' +
+        String(links.length).padStart(2,'0') + '</span>');
+      var btn = document.createElement('button');
+      btn.className = 'w-more';
+      btn.type = 'button';
+      btn.textContent = 'view all ' + links.length + ' plates →';
+      btn.setAttribute('aria-label', 'open all ' + links.length + ' screenshots');
+      btn.addEventListener('click', function(){ openAt(0); });
+      shots.insertAdjacentElement('afterend', btn);
+    }
   });
   document.getElementById('lb-close').addEventListener('click', lbHide);
   document.getElementById('lb-prev').addEventListener('click', function(){ lbShow(gIdx - 1); });

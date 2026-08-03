@@ -16,6 +16,7 @@ Brutalist single-page portfolio. One hand-written HTML file, no framework, no bu
 | `fonts/` | Self-hosted Archivo Black + Space Mono (woff2) |
 | `functions/_middleware.js` | Cloudflare Pages Function — serves `zemo.txt` to curl/wget at the root URL |
 | `_headers` | Cache and security headers for Cloudflare Pages |
+| `build-resume.py` + `build-fonts/` | Generates `zemo-resume.pdf` (outside `public/`, never served) |
 
 Design history (`index-suprematist.html`, `index-brutal-v1.html`) lives outside this folder in `Desktop\portfolio-archive\`.
 
@@ -35,7 +36,17 @@ Content lives in three places. When you change one, check the others:
 
 - **Site** (`index.html`)
 - **ASCII version** (`zemo.txt`)
-- **Resume** (`zemo-resume.pdf` — regenerated from a script, ask your agent or rebuild by hand)
+- **Resume** (`zemo-resume.pdf` — generated: edit `build-resume.py`, then `python build-resume.py`)
+
+### Rebuilding the resume
+
+`build-resume.py` draws the PDF with ReportLab against the fonts in `build-fonts/`
+(TTF conversions of the woff2 files in `public/fonts/`, so the resume and the site
+use the same typefaces). It writes straight to `public/zemo-resume.pdf`.
+
+The layout is absolute, not flowed — one page, and the script asserts the content
+clears the black footer bar. If you add a project, take the space back somewhere:
+a summary line, the `GAP` constant, or the skills leading.
 
 ## Configuration
 

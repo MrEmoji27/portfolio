@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZEMO — developer portfolio</title>
+<title>zemo</title>
 <meta name="description" content="zemo — developer portfolio. local-first software, encrypted messengers, and machine-learning projects. open to work.">
 <meta name="theme-color" content="#e8e4d8">
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="img/icon-180.png">
-<meta property="og:title" content="ZEMO — developer portfolio">
+<meta property="og:title" content="zemo">
 <meta property="og:description" content="local-first software, encrypted messengers, and machine-learning projects. open to work.">
 <meta property="og:type" content="website">
 <!-- NOTE: swap this host when the custom domain lands -->
@@ -18,7 +18,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://portfolio.mremoji47.workers.dev/img/og-card.png">
-<meta name="twitter:title" content="ZEMO — developer portfolio">
+<meta name="twitter:title" content="zemo">
 <meta name="twitter:description" content="local-first software, encrypted messengers, and machine-learning projects. open to work.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23e8e4d8'/%3E%3Ccircle cx='38' cy='24' r='16' fill='%230d0d0b'/%3E%3Crect x='6' y='38' width='36' height='9' fill='%23e03418' transform='rotate(-14 24 42)'/%3E%3C/svg%3E">
 <script type="application/ld+json">
@@ -57,14 +57,25 @@
     --ink:#e8e4d8;
   }
   *{margin:0;padding:0;box-sizing:border-box;border-radius:0}
-  html{scroll-behavior:smooth;overflow-x:clip}
+  /* the [hidden] attribute is only a UA `display:none`, so any rule that sets
+     display (several below do) silently beats it. this makes it mean what it says. */
+  [hidden]{display:none!important}
+  html{overflow-x:clip}
+  /* smooth anchor scrolling is opt-in: on touch it fights the momentum scroller,
+     and it silently animates every programmatic scrollTo/focus jump too. */
+  @media(prefers-reduced-motion:no-preference) and (hover:hover){
+    html{scroll-behavior:smooth}
+  }
   body{
     background:var(--paper);
     color:var(--ink);
     font-family:'Space Mono',monospace;
     overflow-x:clip;
+    overscroll-behavior-y:contain;
     cursor:crosshair;
   }
+  /* body is pinned while a modal is open so the page underneath cannot scroll */
+  body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   a,button,summary{cursor:pointer}
   ::selection{background:var(--red);color:var(--paper)}
   *{-webkit-tap-highlight-color:transparent}
@@ -88,7 +99,11 @@
   .skip:focus{top:1rem}
 
   /* ================= the composition ================= */
-  #art{position:fixed;inset:0;width:100vw;height:100dvh;z-index:0}
+  /* NOTE: this layer must never be sized in dvh. on mobile the url bar
+     collapsing/expanding would resize it on every scroll direction change,
+     re-rasterising 11 filtered shapes mid-gesture. lvh is the largest
+     viewport height and is static, so the layer is painted once. */
+  #art{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;z-index:0}
   #art .ink{fill:var(--ink)}
   #art .ink-s{stroke:var(--ink)}
   #art .shape{filter:drop-shadow(9px 9px 0 rgba(13,13,11,.85))}
@@ -104,6 +119,7 @@
   /* grain */
   body::after{
     content:"";position:fixed;inset:0;z-index:6;pointer-events:none;
+    transform:translateZ(0);
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
   }
 
@@ -114,9 +130,12 @@
     background-size:64px 64px;
   }
 
+  /* nowrap matters: without it this wrapped into two vertical columns and read
+     as a garbled block down the right edge. the tighter tracking is what keeps
+     the single column inside the viewport. */
   .edge{
     position:fixed;right:1.1rem;top:50%;transform:translateY(-50%);z-index:2;
-    writing-mode:vertical-rl;font-size:.65rem;letter-spacing:.45em;
+    writing-mode:vertical-rl;white-space:nowrap;font-size:.6rem;letter-spacing:.28em;
     text-transform:uppercase;opacity:.6;pointer-events:none;font-weight:700;
   }
 
@@ -155,7 +174,10 @@
   main{position:relative;z-index:1}
 
   /* ================= plate 1 ================= */
-  .plate{min-height:calc(100svh - 56px);min-height:calc(100dvh - 56px);padding:4vw;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+  /* svh, not dvh: the hero must keep one fixed height for the life of the page.
+     with dvh the document grows/shrinks every time the mobile url bar animates,
+     which yanks the scroll position and looks like the page is clipping. */
+  .plate{min-height:calc(100vh - 56px);min-height:calc(100svh - 56px);padding:4vw;display:flex;flex-direction:column;justify-content:space-between;position:relative}
   h1{
     font-family:'Archivo Black',sans-serif;
     font-size:clamp(5rem,25vw,24rem);
@@ -168,9 +190,12 @@
     animation-delay:calc(var(--i)*.11s);
     text-shadow:.05em .05em 0 var(--red);
   }
+  /* .05em of a 384px letter threw the blue shadow 19px clear, which read as a
+     second solid letterform rather than an offset. pulled in tight so the ink
+     stroke reads as the letterform and the blue sits just behind it. */
   h1 .o{
     color:transparent;-webkit-text-stroke:4px var(--ink);
-    text-shadow:.05em .05em 0 var(--blue);
+    text-shadow:.014em .014em 0 var(--blue);
   }
   @keyframes slam{
     0%{transform:translateY(-1.2em) scale(1.4);opacity:0}
@@ -186,7 +211,8 @@
   }
   .subtitle .term{font-weight:700;background:var(--yellow);color:#0d0d0b;padding:0 .3em}
   .subtitle em{font-style:italic}
-  .subtitle .op{background:var(--red);color:var(--paper);padding:0 .35em;font-weight:700}
+  /* red-deep, not red: paper-on-red is 3.53:1 and this is body-size text (needs 4.5:1) */
+  .subtitle .op{background:var(--red-deep);color:#e8e4d8;padding:0 .35em;font-weight:700}
   @keyframes drop{from{opacity:0;transform:rotate(-1deg) translateY(-30px)}to{opacity:1;transform:rotate(-1deg)}}
   /* hero buttons slide up but never fade — they must always read as solid, upright CTAs */
   @keyframes rise{from{transform:translateY(22px)}to{transform:none}}
@@ -292,9 +318,12 @@
   .method .mark{width:38px;height:38px;margin-bottom:1.3rem}
   .method h3{font-family:'Archivo Black',sans-serif;font-size:1.2rem;text-transform:uppercase;margin-bottom:.9rem}
   .method p{font-size:.88rem}
+  /* lowercase i./ii./iii. in Space Mono reads as 1./11./111. — the dots on the
+     i's merge with the stems. uppercase plus wide tracking separates them. */
   .method .rn{
-    position:absolute;top:-1rem;right:1rem;font-size:.75rem;letter-spacing:.2em;font-weight:700;
-    background:var(--ink);color:var(--paper);padding:.25em .6em;
+    position:absolute;top:-1rem;right:1rem;font-size:.75rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:.38em;
+    background:var(--ink);color:var(--paper);padding:.25em .4em .25em .7em;
   }
   .xp{
     margin-top:2.6rem;border:4px solid var(--ink);background:var(--ink);color:var(--paper);
@@ -355,8 +384,14 @@
   .w-tag{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;text-align:right;font-weight:700}
   .w-plus{font-family:'Archivo Black',sans-serif;font-size:1.6rem;line-height:1;transition:transform .12s steps(2)}
   li.open .w-plus{transform:rotate(45deg)}
-  .w-body{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s steps(6),opacity .2s linear}
-  li.open .w-body{max-height:150em;opacity:1}
+  /* visibility:hidden matters as much as max-height:0 here. without it the
+     links inside a collapsed panel stay in the tab order, and tabbing into
+     one makes the browser scroll to content nobody can see. */
+  .w-body{
+    max-height:0;overflow:hidden;opacity:0;visibility:hidden;
+    transition:max-height .3s steps(6),opacity .2s linear,visibility 0s linear .3s;
+  }
+  li.open .w-body{max-height:150em;opacity:1;visibility:visible;transition-delay:0s,0s,0s}
   .w-inner{padding:1.8rem 1.6rem 2.2rem;border-top:4px dashed var(--ink);display:grid;grid-template-columns:5.5rem 1fr;gap:2rem}
   .w-inner>div{grid-column:2}
   .w-desc{font-size:.92rem;max-width:64ch;margin-bottom:1.4rem}
@@ -422,11 +457,22 @@
   }
 
   /* ================= works ticker ================= */
-  .ticker{overflow:hidden;padding:1rem;border:4px solid var(--ink);background:var(--paper);box-shadow:var(--shadow)}
-  .ticker-track{display:inline-flex;align-items:stretch;animation:tickerslide 60s linear infinite;will-change:transform}
-  .ticker:hover .ticker-track,.ticker.paused .ticker-track{animation-play-state:paused}
-  @keyframes tickerslide{to{transform:translateX(-50%)}}
-  .card{flex:0 0 auto;position:relative;overflow:hidden;padding:0;width:clamp(250px,25vw,330px);height:clamp(340px,55vh,520px);margin:0 .6rem;border:3px solid var(--ink);background:#0d0d0b;box-shadow:6px 6px 0 var(--ink);cursor:pointer;transition:transform .12s linear,box-shadow .12s linear}
+  /* the marquee is driven by rAF, not @keyframes, because the position has to be
+     scrubbable: a css animation owns `transform` outright, so a wheel nudge would
+     be overwritten on the next frame. the js loop is the single source of truth
+     and every pause below is a flag it reads. `cursor:grab` advertises the drag. */
+  /* base state is the no-js state: a plain horizontally scrollable strip. the js
+     loop opts in by adding .live, so a failed script degrades to something usable
+     rather than a frozen row with eight works stranded off the right edge. */
+  .ticker{overflow-x:auto;padding:1rem;border:4px solid var(--ink);background:var(--paper);box-shadow:var(--shadow)}
+  .ticker.live{overflow:hidden;cursor:grab;touch-action:pan-y}
+  /* the cards cover almost all of the strip and are buttons, so `a,button{cursor:pointer}`
+     would hide the grab affordance entirely — and mid-drag the pointer finger would
+     say "click me" while the row is being thrown sideways. */
+  .ticker.live.dragging,.ticker.live.dragging .card{cursor:grabbing}
+  .ticker.live.dragging .card{transition:none}
+  .ticker-track{display:inline-flex;align-items:stretch;will-change:transform}
+  .card{flex:0 0 auto;position:relative;overflow:hidden;padding:0;width:clamp(250px,25vw,330px);height:clamp(340px,55svh,520px);margin:0 .6rem;border:3px solid var(--ink);background:#0d0d0b;box-shadow:6px 6px 0 var(--ink);cursor:pointer;transition:transform .12s linear,box-shadow .12s linear}
   .card:hover,.card:focus-visible{transform:translate(-4px,-4px);box-shadow:11px 11px 0 var(--red);outline:none}
   .card.active{box-shadow:6px 6px 0 var(--red)}
   .card-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .35s ease}
@@ -439,10 +485,21 @@
   .card-tag{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#e8e4d8;opacity:.82}
   .card-flag{align-self:flex-start;margin-top:.3rem;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;background:var(--red-deep);color:#e8e4d8;padding:.22em .55em;animation:blink 1.6s steps(2) infinite}
   .ticker.paused{outline:3px dashed var(--red);outline-offset:-3px}
+  /* plates 07/08/10 have no screenshot. as a plain black box they read as a
+     broken image; as a halftone field they read as unprinted stock, which is
+     the language the rest of the page is already speaking. */
+  .card--noimg{
+    background-image:radial-gradient(circle,rgba(232,228,216,.16) 1.6px,transparent 1.7px);
+    background-size:15px 15px;
+  }
 
   .works-detail{position:relative}
-  .wd{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s steps(8),opacity .2s linear}
-  .wd.open{max-height:240em;opacity:1;margin-top:1.6rem}
+  /* same as .w-body: a closed panel must be untabbable, not merely zero-height */
+  .wd{
+    max-height:0;overflow:hidden;opacity:0;visibility:hidden;
+    transition:max-height .35s steps(8),opacity .2s linear,visibility 0s linear .35s;
+  }
+  .wd.open{max-height:240em;opacity:1;visibility:visible;margin-top:1.6rem;transition-delay:0s,0s,0s}
   .wd-inner{position:relative;border:4px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);padding:2rem 2rem 2.3rem}
   .wd-close{position:absolute;top:0;right:0;font-family:'Space Mono',monospace;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--paper);background:var(--ink);border:0;padding:.5em .8em;cursor:pointer}
   .wd-close:hover{background:var(--red-deep);color:#e8e4d8}
@@ -454,7 +511,7 @@
   @media(hover:none){.card:hover{transform:none;box-shadow:6px 6px 0 var(--ink)}.card:hover .card-media{transform:none}}
   @media(max-width:700px){
     .ticker{padding:.7rem}
-    .card{width:clamp(210px,64vw,250px);height:clamp(300px,52vh,380px);margin:0 .4rem;box-shadow:5px 5px 0 var(--ink)}
+    .card{width:clamp(210px,64vw,250px);height:clamp(300px,52svh,380px);margin:0 .4rem;box-shadow:5px 5px 0 var(--ink)}
     .card-name{font-size:clamp(1.2rem,6.4vw,1.7rem)}
     .card-ghost{font-size:9rem}
     .card-body{padding:.9rem .85rem}
@@ -473,11 +530,13 @@
     position:fixed;inset:0;z-index:8;display:none;
     background:rgba(13,13,11,.88);
     align-items:center;justify-content:center;flex-direction:column;gap:1rem;
-    padding:4vh 4vw;
+    /* no touch-action here: the lightbox isn't scrollable, so pan-y would buy
+       nothing and would disable pinch-to-zoom on the screenshot. */
+    padding:4svh 4vw;overscroll-behavior:contain;
   }
   .lb.on{display:flex}
   .lb img{
-    max-width:88vw;max-height:74vh;display:block;
+    max-width:88vw;max-height:74svh;display:block;
     border:4px solid var(--paper);box-shadow:12px 12px 0 var(--red);
     background:#fff;
   }
@@ -498,8 +557,14 @@
   .tm{
     position:fixed;inset:0;z-index:8;display:none;
     background:rgba(13,13,11,.88);
-    align-items:center;justify-content:center;padding:4vh 4vw;
+    /* flex-start + margin:auto, NOT align-items:center. a centred flex item
+       taller than its scroll container overflows past the top edge and that
+       overflow is unreachable — with the on-screen keyboard up, the first
+       fields would be unscrollable. auto margins centre it when it fits. */
+    align-items:flex-start;justify-content:center;padding:4svh 4vw;
+    overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
   }
+  .tm .tm-box{margin:auto}
   .tm.on{display:flex}
   .tm-box{
     background:var(--paper);border:4px solid var(--ink);box-shadow:14px 14px 0 var(--red);
@@ -534,12 +599,25 @@
   ol li.reveal.in{transition-delay:var(--d,0s)}
 
   /* ================= contact ================= */
-  .end{min-height:80vh;display:flex;flex-direction:column;justify-content:space-between;padding-bottom:0}
+  .end{min-height:80svh;display:flex;flex-direction:column;justify-content:space-between;padding-bottom:0}
   .statement{
     font-family:'Archivo Black',sans-serif;
     font-size:clamp(1.8rem,5vw,4.4rem);
     line-height:1.06;text-transform:uppercase;max-width:24ch;
   }
+  /* the composition is fixed and full strength behind this, and the closing
+     line was landing on a yellow circle and a red bar. rather than dim the
+     art, the type carries its own paper. inline + box-decoration-break gives
+     each line its own ground instead of one slab over the whole block, and
+     the horizontal box-shadows act as padding without breaking the line box. */
+  .statement .sg{
+    display:inline;background:var(--paper);
+    box-shadow:.3em 0 0 var(--paper),-.3em 0 0 var(--paper);
+    -webkit-box-decoration-break:clone;box-decoration-break:clone;
+  }
+  /* same problem, smaller type: the right-hand section descriptor */
+  .sec-head>span:not(:first-child){background:var(--paper);padding:.3em .6em}
+  @media(min-width:1001px){.sec-head{padding-right:3rem}}
   .statement .r{background:var(--red);color:var(--paper);padding:0 .12em}
   .statement .b{background:var(--blue);color:var(--paper);padding:0 .12em}
   .statement .strike{position:relative;white-space:nowrap}
@@ -585,6 +663,11 @@
       padding:.15rem 4vw .15rem .2rem;margin:0;
       scrollbar-width:none;-webkit-overflow-scrolling:touch;
       mask-image:linear-gradient(90deg,#000 84%,transparent);
+      /* pan-x so an upward swipe starting on the nav row still scrolls the page
+         instead of being swallowed by this horizontal scroller. pinch-zoom is
+         listed explicitly or this would also block zooming over the nav. */
+      touch-action:pan-x pinch-zoom;
+      overscroll-behavior-x:contain;
     }
     .nav .links::-webkit-scrollbar{display:none}
     .nav .links a,#flip{
@@ -664,8 +747,8 @@
     .top-btn{right:.7rem;bottom:.7rem;width:34px;height:34px;font-size:.9rem}
 
     /* modals need room and thumb-friendly controls */
-    .lb{padding:2vh 3vw;gap:.7rem}
-    .lb img{max-width:94vw;max-height:64vh;box-shadow:7px 7px 0 var(--red)}
+    .lb{padding:2svh 3vw;gap:.7rem}
+    .lb img{max-width:94vw;max-height:64svh;box-shadow:7px 7px 0 var(--red)}
     .lb button{padding:.6em 1.1em;min-height:44px}
     .lb .lb-cap{font-size:.68rem}
     .tm-box{padding:1.4rem;box-shadow:9px 9px 0 var(--red)}
@@ -681,7 +764,12 @@
     }
   }
   /* ================= interaction pass ================= */
-  #prog{position:fixed;top:0;left:0;height:4px;width:0;background:var(--red);z-index:6;pointer-events:none}
+  /* driven by transform, not width — width would relayout on every scroll frame */
+  #prog{
+    position:fixed;top:0;left:0;height:4px;width:100%;background:var(--red);
+    z-index:6;pointer-events:none;transform:scaleX(0);transform-origin:0 50%;
+    will-change:transform;
+  }
   .nav .links a.here{background:var(--ink);color:var(--paper)}
   .down:active,#flip:active,.w-links a:active,.w-links .cta:active,.tm-actions .go:active,.lb button:active,.big-mail:active,.top-btn:active{box-shadow:none!important;transform:translate(4px,4px)}
   h1 .l{transition:transform .18s steps(3)}
@@ -692,23 +780,24 @@
   .w-tease{grid-column:2/4;font-size:.8rem;opacity:.75;font-weight:400;max-width:60ch}
   li.open .w-tease{display:none}
   ol li{scroll-margin-top:76px}
+  /* toggled with opacity/visibility rather than display: no layout on scroll */
   .top-btn{
     position:fixed;right:1rem;bottom:1rem;z-index:5;width:38px;height:38px;
-    display:none;align-items:center;justify-content:center;
+    display:flex;align-items:center;justify-content:center;
     font-size:1rem;font-weight:700;text-decoration:none;color:var(--ink);
     background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--red);
-    opacity:.9;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .15s linear,visibility 0s linear .15s;
   }
-  .top-btn.show{display:flex}
-  .top-btn:hover{opacity:1}
-  .top-btn:hover{background:var(--ink);color:var(--paper)}
+  .top-btn.show{opacity:.9;visibility:visible;pointer-events:auto;transition-delay:0s,0s}
+  .top-btn:hover{opacity:1;background:var(--ink);color:var(--paper)}
   #lb-count{color:#e8e4d8;font-size:.8rem;letter-spacing:.15em;align-self:center}
   .tm-box{position:relative}
   .pulse{
     display:inline-block;margin-top:1.1rem;max-width:60ch;
     font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
     border:3px solid var(--ink);padding:.45em .9em;
-    color:var(--ink);text-decoration:none;
+    background:var(--paper);color:var(--ink);text-decoration:none;
     animation:fadein .4s both;
   }
   .pulse:hover{background:var(--ink);color:var(--paper)}
@@ -740,9 +829,41 @@
     .w-tease{grid-column:2/3}
     .top-btn{right:.9rem;bottom:.9rem;width:46px;height:46px}
   }
+
+  @media(max-width:700px){
+  }
+  /* ================= mobile performance pass =================
+     phones pay for every full-screen fixed layer and every filtered node.
+     the effects below are near-invisible at phone size but cost a repaint
+     on each frame of a scroll, so they come off. desktop keeps all of it. */
+  @media(hover:none),(max-width:700px){
+    /* 11 drop-shadowed svg nodes behind a scrolling page is the single
+       most expensive thing here — the shapes stay, the filter goes. */
+    #art .shape,body.neg #art .shape{filter:none}
+    /* ruled grid sits at 6% opacity over 64px squares: unreadable on a phone */
+    main::before{display:none}
+  }
+  /* NOTE: the stroked display numerals (section[data-num]::after, .card-ghost)
+     deliberately keep their -webkit-text-stroke. swapping them for a flat fill
+     looked like a win but isn't: a transform-driven marquee rasterises its
+     layer once and then only composites, so the stroke costs nothing per
+     frame — and a solid fill at the same opacity reads much heavier. */
+  /* offscreen animation is battery and main-thread spend for nothing */
+  .anim-off,.anim-off .strip-inner,.anim-off .tk-track,.anim-off .ticker-track{
+    animation-play-state:paused!important;
+  }
+  /* .ticker no longer has a css animation to pause — it keeps its own observer,
+     which stops the rAF loop outright rather than parking an animation. */
+
   @media(prefers-reduced-motion:reduce){
-    #art .shape,#art .decor,h1 .l,.subtitle,.down,.seal,.strip-inner,.status i,.tk-track,.tm-stamp{animation:none;transition:none}
+    /* .w-badge and .card-flag blink indefinitely — WCAG 2.2.2 wants that stoppable */
+    #art .shape,#art .decor,h1 .l,.subtitle,.down,.seal,.strip-inner,.status i,.tk-track,
+    .tm-stamp,.w-badge,.card-flag,.ticker-track{animation:none;transition:none}
+    /* the works strip stops advancing on its own (the loop checks the same query)
+       and goes back to being scrolled by hand. */
+    .ticker.live{overflow-x:auto;cursor:auto}
     .reveal{opacity:1;transform:none}
+    .wd,.w-body{transition:none}
     #prog{display:none}
   }
 </style>
@@ -911,10 +1032,10 @@
 
   <!-- ================= catalogue ================= -->
   <section id="works" data-num="02">
-    <div class="sec-head reveal"><h2>02 — selected works</h2><span>2024 — 2026 · a moving index — tap any work to open it</span></div>
-    <div class="ticker reveal" id="wticker" aria-label="selected works — a moving index; tap a work to open it">
+    <div class="sec-head reveal"><h2>02 — selected works</h2><span>2024 — 2026 · a moving index — drag or scroll it, tap any work to open it</span></div>
+    <div class="ticker reveal" id="wticker" role="group" aria-label="selected works — a moving index; drag or scroll sideways to move it, tap a work to open it">
       <div class="ticker-track" id="wtrack">
-        <button class="card" data-w="zoro" type="button" aria-label="open Zoro">
+        <button class="card" data-w="zoro" type="button" aria-expanded="false" aria-controls="wd-zoro" aria-label="open Zoro">
           <img class="card-media" src="img/zoro-terminal.png" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">01</span>
@@ -923,7 +1044,7 @@
             
           </span>
         </button>
-        <button class="card" data-w="zolt" type="button" aria-label="open Zolt">
+        <button class="card" data-w="zolt" type="button" aria-expanded="false" aria-controls="wd-zolt" aria-label="open Zolt">
           <img class="card-media" src="img/zolt-landing.jpg" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">02</span>
@@ -932,7 +1053,7 @@
             <span class="card-flag">testers wanted</span>
           </span>
         </button>
-        <button class="card" data-w="eails" type="button" aria-label="open EAILS">
+        <button class="card" data-w="eails" type="button" aria-expanded="false" aria-controls="wd-eails" aria-label="open EAILS">
           <img class="card-media" src="img/eails-learn.jpg" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">03</span>
@@ -941,7 +1062,7 @@
             
           </span>
         </button>
-        <button class="card" data-w="chronicle" type="button" aria-label="open Anamnesis">
+        <button class="card" data-w="chronicle" type="button" aria-expanded="false" aria-controls="wd-chronicle" aria-label="open Anamnesis">
           <img class="card-media" src="img/anamnesis-main.jpg" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">04</span>
@@ -950,7 +1071,7 @@
             <span class="card-flag">testers wanted</span>
           </span>
         </button>
-        <button class="card" data-w="f1ml" type="button" aria-label="open F1 Machine Learning project">
+        <button class="card" data-w="f1ml" type="button" aria-expanded="false" aria-controls="wd-f1ml" aria-label="open F1 Machine Learning project">
           <img class="card-media" src="img/f1-predictions.jpg" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">05</span>
@@ -959,7 +1080,7 @@
             
           </span>
         </button>
-        <button class="card" data-w="ttz" type="button" aria-label="open Talk to Zemo">
+        <button class="card" data-w="ttz" type="button" aria-expanded="false" aria-controls="wd-ttz" aria-label="open Talk to Zemo">
           <img class="card-media" src="img/ttz-landing.jpg" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">06</span>
@@ -968,7 +1089,7 @@
             
           </span>
         </button>
-        <button class="card card--noimg" data-w="vault" type="button" aria-label="open Zemo's Vault">
+        <button class="card card--noimg" data-w="vault" type="button" aria-expanded="false" aria-controls="wd-vault" aria-label="open Zemo's Vault">
           <span class="card-ghost" aria-hidden="true">07</span>
           <span class="card-body">
             <span class="card-n">07</span>
@@ -977,7 +1098,7 @@
             
           </span>
         </button>
-        <button class="card card--noimg" data-w="swelpt" type="button" aria-label="open Swelpt">
+        <button class="card card--noimg" data-w="swelpt" type="button" aria-expanded="false" aria-controls="wd-swelpt" aria-label="open Swelpt">
           <span class="card-ghost" aria-hidden="true">08</span>
           <span class="card-body">
             <span class="card-n">08</span>
@@ -986,7 +1107,7 @@
             
           </span>
         </button>
-        <button class="card" data-w="ytmcli" type="button" aria-label="open ytmcli">
+        <button class="card" data-w="ytmcli" type="button" aria-expanded="false" aria-controls="wd-ytmcli" aria-label="open ytmcli">
           <img class="card-media" src="img/ytmcli-themes.png" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">09</span>
@@ -995,16 +1116,16 @@
             
           </span>
         </button>
-        <button class="card card--noimg" data-w="spektr" type="button" aria-label="open spektr">
-          <span class="card-ghost" aria-hidden="true">10</span>
+        <button class="card" data-w="spektr" type="button" aria-expanded="false" aria-controls="wd-spektr" aria-label="open spektr">
+          <img class="card-media" src="img/spektr-card.jpg" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">10</span>
             <span class="card-name">spektr</span>
             <span class="card-tag">python · numpy · textual</span>
-            
+            <span class="card-flag">new — shipped</span>
           </span>
         </button>
-        <button class="card card--noimg" data-w="site" type="button" aria-label="open This Site">
+        <button class="card card--noimg" data-w="site" type="button" aria-expanded="false" aria-controls="wd-site" aria-label="open This Site">
           <span class="card-ghost" aria-hidden="true">11</span>
           <span class="card-body">
             <span class="card-n">11</span>
@@ -1016,7 +1137,7 @@
       </div>
     </div>
     <div class="works-detail" id="wdetail">
-      <div class="wd" data-w="zoro">
+      <div class="wd" id="wd-zoro" data-w="zoro" role="region" aria-label="Zoro — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close Zoro">close &#10005;</button>
           <header class="wd-head">
@@ -1040,7 +1161,7 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="zolt">
+      <div class="wd" id="wd-zolt" data-w="zolt" role="region" aria-label="Zolt — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close Zolt">close &#10005;</button>
           <header class="wd-head">
@@ -1065,7 +1186,7 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="eails">
+      <div class="wd" id="wd-eails" data-w="eails" role="region" aria-label="EAILS — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close EAILS">close &#10005;</button>
           <header class="wd-head">
@@ -1093,7 +1214,7 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="chronicle">
+      <div class="wd" id="wd-chronicle" data-w="chronicle" role="region" aria-label="Anamnesis — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close Anamnesis">close &#10005;</button>
           <header class="wd-head">
@@ -1118,7 +1239,7 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="f1ml">
+      <div class="wd" id="wd-f1ml" data-w="f1ml" role="region" aria-label="F1 Machine Learning — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close F1 Machine Learning project">close &#10005;</button>
           <header class="wd-head">
@@ -1141,7 +1262,7 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="ttz">
+      <div class="wd" id="wd-ttz" data-w="ttz" role="region" aria-label="Talk to Zemo — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close Talk to Zemo">close &#10005;</button>
           <header class="wd-head">
@@ -1164,7 +1285,7 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="vault">
+      <div class="wd" id="wd-vault" data-w="vault" role="region" aria-label="Zemo's Vault — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close Zemo's Vault">close &#10005;</button>
           <header class="wd-head">
@@ -1183,7 +1304,7 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="swelpt">
+      <div class="wd" id="wd-swelpt" data-w="swelpt" role="region" aria-label="Swelpt — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close Swelpt">close &#10005;</button>
           <header class="wd-head">
@@ -1200,7 +1321,7 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="ytmcli">
+      <div class="wd" id="wd-ytmcli" data-w="ytmcli" role="region" aria-label="ytmcli — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close ytmcli">close &#10005;</button>
           <header class="wd-head">
@@ -1215,7 +1336,7 @@
             <li>10-band equaliser applied live to mpv and persisted across tracks</li>
             <li>textual tui with search, library, and queue tabs, a command palette, and 30+ themes</li>
             <li>honest status: browser-cookie auth against the unofficial api broke — the fix is a rewrite, not a patch</li>
-            <li>the visualiser outlived it — extracted and rebuilt as <b>spektr</b>, № 10 below</li>
+            <li>the visualiser outlived it — extracted, rebuilt and shipped as <b>spektr</b>, № 10 below</li>
           </ul>
           <div class="w-shots">
             <a href="img/ytmcli-themes.png" target="_blank" rel="noopener"><img src="img/ytmcli-themes-duo.png" alt="ytmcli theme picker — a searchable list of more than thirty terminal themes" loading="lazy"></a>
@@ -1227,27 +1348,37 @@
           </div>
         </div>
       </div>
-      <div class="wd" data-w="spektr">
+      <div class="wd" id="wd-spektr" data-w="spektr" role="region" aria-label="spektr — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close spektr">close &#10005;</button>
           <header class="wd-head">
             <span class="slide-num">&#8470;10</span><h3 class="w-name">spektr</h3><span class="w-tag">python · numpy · textual</span>
-            <p class="w-tease">a spectrum analyser that lives in your terminal</p>
+            <p class="w-tease">a spectrum analyser that lives in your terminal — shipped</p>
           </header>
           <div class="wd-body">
-              <p class="w-desc">play music anywhere — spotify, a browser tab, a game — and spektr draws it in the terminal. it started as the visualiser inside ytmcli, turned out to be the best part of that project and the only part that didn't depend on anyone's api, so it moved out and got its own name.</p>
+              <p class="w-desc">point it at nothing. play music anywhere — spotify, a browser tab, a game, a call — and spektr draws it: overlapped ffts across log-spaced bands from 50 hz to 10 khz, rendered with braille sub-characters so the picture moves at four times the vertical resolution of a text cell. twenty-seven render modes, forty themes, locked 60 fps. it started as the visualiser inside ytmcli, turned out to be the best part of that project and the only part that didn't depend on anyone's api, so it moved out and got its own name.</p>
           <ul class="w-feats">
-            <li>2048-point fft across ten bands, 20 hz to 20 khz, straight off the system's output</li>
-            <li>braille sub-character rendering — four times the vertical resolution of a text cell</li>
-            <li>eight modes: bars, bricks, columns, wave, scatter, flame, retro, pulse</li>
-            <li>critically-damped spring easing at 45 fps, tuned for zero overshoot</li>
-            <li>auto-finds the right audio source: wasapi loopback, stereo mix, or a monitor device</li>
+            <li>no configuration, no file, no music service — it finds the output device, taps it via loopback, and draws</li>
+            <li>twenty-seven modes — bars, radial, spectro, matrix, gonio, flame, tunnel and the rest — picked live from a filterable previewer</li>
+            <li>forty themes, blended in linear light rather than straight srgb so gradient midpoints don't go muddy; custom themes are a toml file in a folder</li>
+            <li>bands follow cava's distribution: two fft windows (8192 below 100 hz, 4096 above), strictly disjoint bins, tilted by f^0.85 so the treble doesn't flatline</li>
+            <li>easing is expressed in seconds, not frames — a damped spring with sub-stepping, so the motion feels identical at 15 fps and 120 fps</li>
+            <li>plugins: your own visualiser in ~30 lines of numpy, hash-vetted before it runs, quarantined if it raises rather than taking the app down</li>
+            <li>modes emit arrays, not strings — nothing goes through a rich console render, so a smooth field costs a handful of segments per row instead of one per cell</li>
+            <li>measured: analyser 2.9% of a core, heaviest mode 7.5 ms against a 16.7 ms budget at 240×60</li>
           </ul>
-          <div class="w-links"><span class="na">shipping soon — public repo &amp; pip install</span></div>
+          <div class="w-shots">
+            <a href="img/spektr-columns.jpg" target="_blank" rel="noopener"><img src="img/spektr-columns-duo.png" alt="spektr in columns mode — a gapless spectrum filling the terminal, ramped from violet at the bass to pink at the treble" loading="lazy"></a>
+            <a href="img/spektr-mirror.jpg" target="_blank" rel="noopener"><img src="img/spektr-mirror-duo.png" alt="spektr mirrored around the centre line, running as a standalone windows exe on a manually picked output device" loading="lazy"></a>
+            <a href="img/spektr-settings.png" target="_blank" rel="noopener"><img src="img/spektr-settings-duo.png" alt="spektr's settings panel — frame rate, band count, sensitivity and noise gate, all applying live" loading="lazy"></a>
+            <a href="img/spektr-matte.jpg" target="_blank" rel="noopener"><img src="img/spektr-matte-duo.png" alt="the same ladder display in the matte-black theme — segmented bars with peak markers holding above them" loading="lazy"></a>
+          </div>
+          <p class="fig" aria-hidden="true">fig. 01–04 — columns · mirrored, running as a windows exe · settings · matte-black</p>
+          <div class="w-links"><a href="https://github.com/MrEmoji27/spektr" target="_blank" rel="noopener">code →</a><a href="https://github.com/MrEmoji27/spektr/releases" target="_blank" rel="noopener">download →</a><span class="na">live · pip install spektr</span></div>
           </div>
         </div>
       </div>
-      <div class="wd" data-w="site">
+      <div class="wd" id="wd-site" data-w="site" role="region" aria-label="This Site — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close This Site">close &#10005;</button>
           <header class="wd-head">
@@ -1304,7 +1435,7 @@
   <section class="end" id="contact" data-num="04">
     <div>
       <div class="sec-head reveal"><h2>04 — contact</h2><span>my inbox is open</span></div>
-      <p class="statement reveal">software should be <span class="r">fast</span>, <span class="b">private</span>, and yours. sound like your kind of thing? let's talk.</p>
+      <p class="statement reveal"><span class="sg">software should be <span class="r">fast</span>, <span class="b">private</span>, and yours. sound like your kind of thing? let's talk.</span></p>
       <div style="display:flex;align-items:center;flex-wrap:wrap;gap:1rem">
         <a class="big-mail" href="mailto:zemo@tuta.com?subject=hello%20zemo">email me → zemo@tuta.com</a>
         <button class="copy-btn" id="copyMail" aria-label="copy email address">copy</button>
@@ -1364,7 +1495,7 @@
       <button type="submit" class="go">sign me up →</button>
       <button type="button" class="x" id="tm-close">close</button>
     </div>
-    <p class="tm-note" id="tm-status">your info goes to zemo and nowhere else.</p>
+    <p class="tm-note" id="tm-status" role="status" aria-live="polite">your info goes to zemo and nowhere else.</p>
     <div class="tm-stamp" id="tm-stamp" hidden>sent ✓</div>
   </form>
 </div>
@@ -1404,8 +1535,13 @@
       track.appendChild(clone);
     });
     function markActive(w){
-      Array.prototype.forEach.call(track.children, function(c){ c.classList.toggle('active', w !== null && c.dataset.w === w); });
+      Array.prototype.forEach.call(track.children, function(c){
+        var on = w !== null && c.dataset.w === w;
+        c.classList.toggle('active', on);
+        c.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
     }
+
     function openWork(w){
       if(openW === w){ closeWork(); return; }
       Object.keys(panels).forEach(function(k){ panels[k].classList.toggle('open', k === w); });
@@ -1413,11 +1549,20 @@
       if(worksInView) lite(w);
       var p = panels[w];
       p.querySelectorAll('img[loading="lazy"]').forEach(function(im){ im.loading = 'eager'; });
-      setTimeout(function(){
+      /* the panel grows over .35s. measuring at 120ms (as this used to) reads a
+         position that is still moving, so the scroll lands short and the page
+         appears to jump again as the panel finishes. wait for the transition. */
+      var settled = false;
+      function settle(){
+        if(settled) return;
+        settled = true;
+        p.removeEventListener('transitionend', settle);
         var y = p.getBoundingClientRect().top + window.scrollY - 70;
-        window.scrollTo({top: y, behavior: 'smooth'});
+        window.scrollTo({top: y, behavior: reduced ? 'auto' : 'smooth'});
         var cb = p.querySelector('.wd-close'); if(cb) cb.focus({preventScroll:true});
-      }, 120);
+      }
+      p.addEventListener('transitionend', settle);
+      setTimeout(settle, 420);
     }
     function closeWork(){
       if(openW && panels[openW]) panels[openW].classList.remove('open');
@@ -1428,7 +1573,158 @@
     detail.addEventListener('click', function(e){ if(e.target.closest('.wd-close')) closeWork(); });
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && openW) closeWork(); });
 
-    /* marquee is a CSS animation that pauses on :hover; on touch, pause briefly so a tap lands cleanly */
+    /* ---- the marquee ----
+       driven here rather than by @keyframes, because a css animation owns
+       `transform` outright: a wheel nudge would be painted over on the very next
+       frame. `pos` is the single source of truth — how far the track has
+       travelled left, in px — and everything (auto-advance, wheel, drag) just
+       moves it. the second half of the track is the clone, so wrapping at
+       halfWidth lands on an identical picture and the seam never shows. */
+    var motionQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var pos = 0, half = 0, hovering = false, dragging = false, idleUntil = 0, last = 0, raf = 0;
+    /* defaults true so the no-IntersectionObserver fallback still runs */
+    var visible = true;
+    var SPEED = 60000;   /* ms to travel one half — the old animation's 60s */
+
+    ticker.classList.add('live');
+
+    function measure(){
+      var w = track.scrollWidth / 2;
+      if(w > 0){ half = w; pos = ((pos % half) + half) % half; }
+    }
+    function paint(){ track.style.transform = 'translateX(' + (-pos) + 'px)'; }
+    function nudge(dx){
+      if(!half) measure();
+      if(!half) return;
+      pos = ((pos + dx) % half + half) % half;
+      paint();
+    }
+
+    function frame(t){
+      raf = requestAnimationFrame(frame);
+      var dt = last ? t - last : 0;
+      last = t;
+      /* a backgrounded tab hands back one enormous dt; clamping keeps the strip
+         from teleporting the moment you come back to it */
+      if(dt > 100) dt = 100;
+      if(!half){ measure(); if(!half) return; }
+      if(hovering || dragging || t < idleUntil) return;
+      if(ticker.classList.contains('paused')) return;
+      pos += (dt / SPEED) * half;
+      if(pos >= half) pos -= half;
+      paint();
+    }
+
+    /* every reason not to run is checked here, so the two callers that can turn
+       the loop back on (the observer and the motion query) cannot talk past each
+       other — which is exactly what happened when syncMotion started a loop the
+       observer had just stopped for being off screen. */
+    function start(){
+      if(raf || motionQ.matches || !visible) return;
+      measure(); paint();
+      last = 0;
+      raf = requestAnimationFrame(frame);
+    }
+    function stop(){
+      if(!raf) return;
+      cancelAnimationFrame(raf); raf = 0; last = 0;
+    }
+
+    /* running a rAF loop for a strip nobody can see is main-thread and battery
+       spend for nothing — the same reason .anim-off exists for the css marquees.
+       this observer is that rule for this element, and it can stop the loop
+       outright rather than merely idling it. */
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        es.forEach(function(en){ visible = en.isIntersecting; visible ? start() : stop(); });
+      }, {rootMargin:'120px 0px'}).observe(ticker);
+    } else { start(); }
+
+    /* reduced motion: the strip stops advancing and css hands it back to native
+       horizontal scrolling, so the transform has to be cleared or the row would
+       sit at whatever offset it had stopped on. */
+    function syncMotion(){
+      if(motionQ.matches){ stop(); pos = 0; track.style.transform = ''; }
+      else { start(); }
+    }
+    syncMotion();
+    if(motionQ.addEventListener) motionQ.addEventListener('change', syncMotion);
+
+    /* fonts and lazy images change the track's width after first paint, so the
+       wrap point has to be re-read rather than measured once and trusted */
+    window.addEventListener('resize', measure);
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    window.addEventListener('load', measure);
+
+    ticker.addEventListener('pointerenter', function(e){ if(e.pointerType === 'mouse') hovering = true; });
+    ticker.addEventListener('pointerleave', function(){ hovering = false; });
+
+    /* ---- wheel ----
+       horizontal intent only. a trackpad's sideways swipe (deltaX) and shift+wheel
+       both mean "move this row"; a plain vertical wheel means "move the page" and
+       is left alone. the strip is ~500px tall and loops forever, so there is no
+       far edge at which a hijacked wheel could hand scrolling back — capturing
+       the vertical axis would simply trap anyone whose cursor happened to be
+       over it. */
+    ticker.addEventListener('wheel', function(e){
+      if(motionQ.matches) return;                       /* native scrolling is doing it */
+      var dx = e.deltaX;
+      if(!dx && e.shiftKey) dx = e.deltaY;              /* the mouse-wheel convention */
+      if(!dx) return;
+      if(e.deltaMode === 1) dx *= 16;                   /* lines  */
+      else if(e.deltaMode === 2) dx *= ticker.clientWidth;  /* pages */
+      e.preventDefault();
+      nudge(dx);
+      idleUntil = performance.now() + 900;
+    }, {passive:false});
+
+    /* ---- drag ----
+       a press that travels more than a few px is a scrub, not a tap; the click it
+       would otherwise fire is swallowed in the capture phase so the strip doesn't
+       open a work the moment you let go of it. */
+    var downX = 0, downPos = 0, moved = false, pid = null;
+    ticker.addEventListener('pointerdown', function(e){
+      if(e.button !== 0 || motionQ.matches) return;
+      /* the strip freezes on press so you can catch it, but it is not yet a drag:
+         .dragging waits for the threshold below, or a plain click on a card would
+         flash the grabbing cursor. */
+      dragging = true; moved = false; pid = e.pointerId;
+      downX = e.clientX; downPos = pos;
+    });
+    ticker.addEventListener('pointermove', function(e){
+      if(!dragging || e.pointerId !== pid) return;
+      var d = e.clientX - downX;
+      if(!moved && Math.abs(d) > 4){
+        moved = true;
+        ticker.classList.add('dragging');
+        /* claimed only once the gesture is unambiguous, so a plain tap on a card
+           still reaches the button */
+        if(ticker.setPointerCapture) try{ ticker.setPointerCapture(pid); }catch(err){}
+      }
+      if(!moved) return;
+      e.preventDefault();
+      if(!half) measure();
+      if(half) { pos = ((downPos - d) % half + half) % half; paint(); }
+    });
+    function endDrag(){
+      if(!dragging) return;
+      dragging = false; pid = null;
+      ticker.classList.remove('dragging');
+      idleUntil = performance.now() + (moved ? 900 : 0);
+      /* pointerleave doesn't fire while the pointer is captured, so a drag that
+         ends off the element would otherwise leave `hovering` stuck true and the
+         strip frozen for good */
+      hovering = ticker.matches(':hover');
+    }
+    ticker.addEventListener('pointerup', endDrag);
+    ticker.addEventListener('pointercancel', endDrag);
+    ticker.addEventListener('click', function(e){
+      if(moved){ e.stopPropagation(); e.preventDefault(); moved = false; }
+    }, true);
+    /* otherwise the browser starts its own native image drag mid-scrub */
+    ticker.addEventListener('dragstart', function(e){ e.preventDefault(); });
+
+    /* on touch, hold the strip still for a moment so a tap lands cleanly */
     var holdT;
     ticker.addEventListener('touchstart', function(){
       ticker.classList.add('paused'); clearTimeout(holdT);
@@ -1440,12 +1736,50 @@
       new IntersectionObserver(function(es){
         es.forEach(function(en){ worksInView = en.isIntersecting; lite(worksInView && openW ? openW : null); });
       }, {threshold:.15}).observe(document.getElementById('works'));
-    }
-  })();
+    }  })();
+
+
+
 
   /* ---- duplicate the materials track for a seamless loop ---- */
   var track = document.querySelector('.tk-track');
   if(track){ track.innerHTML += track.innerHTML; }
+
+  /* ---- park every infinite animation that has scrolled off screen ----
+     four marquees and a spinning seal running forever keep the compositor
+     busy (and the battery draining) even when nobody can see them. */
+  if('IntersectionObserver' in window){
+    var animIO = new IntersectionObserver(function(es){
+      es.forEach(function(en){ en.target.classList.toggle('anim-off', !en.isIntersecting); });
+    }, {rootMargin:'120px 0px'});
+    document.querySelectorAll('.strip,.tk-strip,.ticker,.seal').forEach(function(el){
+      animIO.observe(el);
+    });
+  }
+
+  /* ---- page scroll lock, shared by the lightbox and the tester modal ----
+     `overflow:hidden` on body is ignored by ios safari, so the body is pinned
+     at its current offset and restored on close. */
+  var lockY = 0, locks = 0;
+  function lockScroll(){
+    if(locks++ > 0) return;
+    lockY = window.scrollY;
+    document.body.style.top = (-lockY) + 'px';
+    document.body.classList.add('locked');
+  }
+  function unlockScroll(){
+    if(locks === 0) return;
+    if(--locks > 0) return;
+    document.body.classList.remove('locked');
+    document.body.style.top = '';
+    /* the document was one viewport tall while the body was pinned, so the
+       cached maxScroll is stale (~0). re-measure before restoring the offset,
+       or the first scroll event zeroes the progress bar and hides the
+       back-to-top button until the ResizeObserver catches up a frame later. */
+    measure();
+    try{ window.scrollTo({top:lockY, behavior:'instant'}); }
+    catch(e){ window.scrollTo(0, lockY); }
+  }
 
   /* ---- cursor + scroll choreography ----
      touch devices have no cursor and a scroll-linked rAF loop moving 11 nodes
@@ -1508,12 +1842,20 @@
   }
   tick(); setInterval(tick, 1000);
 
-  /* ---- portrait framing: recompose the artwork for tall screens ---- */
+  /* ---- portrait framing: recompose the artwork for tall screens ----
+     driven by an orientation media query, not a resize handler. on mobile
+     `resize` also fires while the url bar animates, which would re-set the
+     viewBox (and re-rasterise the whole svg) in the middle of a scroll. */
   var art = document.getElementById('art');
+  var portraitMQ = window.matchMedia('(orientation:portrait)');
+  var lastBox = '';
   function frame(){
-    art.setAttribute('viewBox', window.innerHeight > window.innerWidth ? '260 0 880 900' : '0 0 1440 900');
+    var box = portraitMQ.matches ? '260 0 880 900' : '0 0 1440 900';
+    if(box !== lastBox){ lastBox = box; art.setAttribute('viewBox', box); }
   }
-  frame(); window.addEventListener('resize', frame, {passive:true});
+  frame();
+  if(portraitMQ.addEventListener) portraitMQ.addEventListener('change', frame);
+  else portraitMQ.addListener(frame);
 
   /* ---- lightbox ---- */
   var lb = document.getElementById('lb');
@@ -1534,10 +1876,14 @@
       new Image().src = gallery[(gIdx + 1) % gallery.length].href;
       new Image().src = gallery[(gIdx - 1 + gallery.length) % gallery.length].href;
     }
-    lb.classList.add('on');
+    if(!lb.classList.contains('on')){ lb.classList.add('on'); lockScroll(); }
   }
   var lbOpener = null;
-  function lbHide(){ lb.classList.remove('on'); lbImg.src=''; if(lbOpener){ lbOpener.focus(); lbOpener = null; } }
+  function lbHide(){
+    if(!lb.classList.contains('on')) return;
+    lb.classList.remove('on'); lbImg.src=''; unlockScroll();
+    if(lbOpener){ lbOpener.focus({preventScroll:true}); lbOpener = null; }
+  }
   document.querySelectorAll('.w-shots').forEach(function(shots){
     var links = shots.querySelectorAll('a');
     function openAt(i){
@@ -1583,15 +1929,19 @@
   var tmForm = document.getElementById('tm-form');
   var tmStatus = document.getElementById('tm-status');
   var tmOpener = null;
-  function tmHide(){ tm.classList.remove('on'); if(tmOpener){ tmOpener.focus(); tmOpener = null; } }
+  function tmHide(){
+    if(!tm.classList.contains('on')) return;
+    tm.classList.remove('on'); unlockScroll();
+    if(tmOpener){ tmOpener.focus({preventScroll:true}); tmOpener = null; }
+  }
   document.querySelectorAll('.w-links .cta[data-app]').forEach(function(a){
     a.addEventListener('click', function(e){
       e.preventDefault();
       tmOpener = a;
       document.getElementById('tm-app').value = a.dataset.app;
       tmStatus.textContent = 'your info goes to zemo and nowhere else.';
-      tm.classList.add('on');
-      document.getElementById('tm-name').focus();
+      if(!tm.classList.contains('on')){ tm.classList.add('on'); lockScroll(); }
+      document.getElementById('tm-name').focus({preventScroll:true});
     });
   });
   document.getElementById('tm-close').addEventListener('click', tmHide);
@@ -1632,21 +1982,37 @@
   var si = 0;
   for(var sk in shapes){ shapes[sk].style.animationDelay = (.15 + si * .09) + 's'; si++; }
 
-  /* ---- scroll progress + back to top ---- */
+  /* ---- scroll progress + back to top ----
+     reading scrollHeight inside a scroll handler forces a synchronous layout on
+     every frame. it is cached instead and only recomputed when the document
+     actually changes size (resize, or a works panel opening). */
   var prog = document.getElementById('prog');
   var topBtn = document.getElementById('topBtn');
-  var scrollQueued = false;
+  var scrollQueued = false, maxScroll = 0, shownTop = false;
+  function measure(){
+    /* never measure while a modal has the body pinned — scrollHeight collapses
+       to one viewport and would poison the cache for the rest of the session. */
+    if(document.body.classList.contains('locked')) return;
+    maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    if(maxScroll < 0) maxScroll = 0;
+  }
   function onScroll(){
     scrollQueued = false;
-    var max = document.documentElement.scrollHeight - window.innerHeight;
-    prog.style.width = (max > 0 ? (window.scrollY / max * 100) : 0) + '%';
+    var y = window.scrollY;
+    prog.style.transform = 'scaleX(' + (maxScroll > 0 ? Math.min(1, y / maxScroll) : 0).toFixed(4) + ')';
     /* show once past the hero, but get out of the way of the colophon at the very bottom */
-    var atBottom = max - window.scrollY < 140;
-    topBtn.classList.toggle('show', window.scrollY > 900 && !atBottom);
+    var want = y > 900 && (maxScroll - y) >= 140;
+    if(want !== shownTop){ shownTop = want; topBtn.classList.toggle('show', want); }
   }
+  measure(); onScroll();
   window.addEventListener('scroll', function(){
     if(!scrollQueued){ scrollQueued = true; requestAnimationFrame(onScroll); }
   }, {passive:true});
+  window.addEventListener('resize', function(){ measure(); onScroll(); }, {passive:true});
+  if('ResizeObserver' in window){
+    var ro = new ResizeObserver(function(){ measure(); onScroll(); });
+    ro.observe(document.body);
+  }
 
   /* ---- scroll-spy: mark the section you're in ---- */
   if('IntersectionObserver' in window){

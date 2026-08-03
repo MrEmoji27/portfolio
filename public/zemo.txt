@@ -56,12 +56,15 @@
       youtube music in the terminal. centrepiece is a real
       2048-point fft visualiser — ten bands, eight render
       modes, braille sub-character drawing. unfinished: the
-      unofficial-api sign-in broke and needs a rewrite.
+      unofficial-api sign-in broke and needs a rewrite. the
+      visualiser was extracted and shipped as spektr, №10.
 
- №10  SPEKTR          python · numpy · textual
-      terminal spectrum analyser for system audio. 2048-point
-      fft, ten bands, braille rendering, eight modes, spring
-      easing at 45fps. extracted from ytmcli's visualiser.
+ №10  SPEKTR          python · numpy · textual         [LIVE]
+      terminal spectrum analyser for system audio. cava's band
+      distribution, braille rendering, 27 modes, 40 themes,
+      plugins, locked 60fps. extracted from ytmcli's visualiser.
+      code: https://github.com/MrEmoji27/spektr
+      install: pip install spektr
 
  №11  THIS SITE       html · css · js — nothing else
       one hand-written file, no framework, no build step,

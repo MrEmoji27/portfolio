@@ -35,8 +35,8 @@
 
  №04  ANAMNESIS       tauri · typescript · tiptap     [TESTERS WANTED]
       private desktop diary — text + voice, all local,
-      ai-readable export for whatever model you trust.
-      product — launching 2026.
+      encrypted with your password, 47 themes, plain
+      markdown export. product — launching 2027.
 
  №05  F1 MACHINE LEARNING PROJECT   python · scikit-learn · fastf1
       gradient-boosted 2026 championship forecasts from five
@@ -64,7 +64,7 @@
       distribution, braille rendering, 27 modes, 40 themes,
       plugins, locked 60fps. extracted from ytmcli's visualiser.
       code: https://github.com/MrEmoji27/spektr
-      install: pip install spektr
+      install: pipx install spektr-audio
 
  №11  THIS SITE       html · css · js — nothing else
       one hand-written file, no framework, no build step,

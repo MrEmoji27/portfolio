@@ -149,7 +149,7 @@ for i,(name, sub, right, red, desc) in enumerate(PROJECTS):
 cur += 18.0
 head(cur, "CURRENTLY")
 cur += 15.0
-txt(L, cur, "building two products toward launch this year — zolt & anamnesis. beta testers wanted.", "SMB", 8.6, RED)
+txt(L, cur, "building two products toward launch — zolt this year, anamnesis in 2027. beta testers wanted.", "SMB", 8.6, RED)
 cur += 12.0
 txt(L, cur, "open to freelance work now, and junior roles after the internship — remote or hyderabad.", "SM", 8.6)
 print("content bottom:", round(cur,1), " footer bar top: 789.9")

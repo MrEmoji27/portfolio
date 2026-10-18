@@ -78,7 +78,7 @@
       aria2, workspaces, split view — and an mcp door for ai
       agents: 47 tools, each with its own tabs and profile,
       on a stage of their own. three looks: signal, glass,
-      precise. daily driver, v0.6.4 — source not public yet.
+      precise. daily driver, v0.6.6 — source not public yet.
 
  №12  THIS SITE       html · css · js — nothing else
       one hand-written file, no framework, no build step,

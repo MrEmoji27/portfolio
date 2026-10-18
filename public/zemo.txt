@@ -38,9 +38,14 @@
       encrypted with your password, 47 themes, plain
       markdown export. product — launching 2027.
 
- №05  F1 MACHINE LEARNING PROJECT   python · scikit-learn · fastf1
-      gradient-boosted 2026 championship forecasts from five
-      seasons of race data, updated as real races finish.
+ №05  NEX             typescript · bun · noise        [ALPHA]
+      terminal-native p2p chat: two peers, one encrypted
+      noise link, no server in the middle — because there is
+      no server. rooms, discovery, nex:// invites, /call for
+      room + invite + voice in one, and calls that carry
+      real sound. alpha, and it says so.
+      code: https://github.com/MrEmoji27/nex
+      install: irm https://raw.githubusercontent.com/MrEmoji27/nex/main/packaging/install.ps1 | iex
 
  №06  TALK TO ZEMO    node · express · sqlite
       leave a note, come back, find a human reply. no account.
@@ -66,7 +71,16 @@
       code: https://github.com/MrEmoji27/spektr
       install: pipx install spektr-audio
 
- №11  THIS SITE       html · css · js — nothing else
+ №11  LUMEN           rust · webview2 · direct2d · mcp
+      a native windows browser: a rust shell around webview2,
+      every pixel of the interface drawn in direct2d, 18.7 mb
+      idle. ads and trackers blocked, sleeping tabs, keepass,
+      aria2, workspaces, split view — and an mcp door for ai
+      agents: 47 tools, each with its own tabs and profile,
+      on a stage of their own. three looks: signal, glass,
+      precise. daily driver, v0.6.4 — source not public yet.
+
+ №12  THIS SITE       html · css · js — nothing else
       one hand-written file, no framework, no build step,
       wcag aa, zero trackers. yes, even this text file.
 

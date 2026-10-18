@@ -56,7 +56,7 @@ def head(t, label):
     rect(L, t-6.5, L+7.0, t+0.5, RED)
     txt(60.0, t, label, "SMB", 10.0)
 
-GAP = 20.0        # was 22.0 — section gap
+GAP = 17.0        # was 20.0 — section gap
 cur = 174.0
 
 # ---- SUMMARY (3 lines, was 4)
@@ -122,12 +122,15 @@ PROJECTS = [
  ("Anamnesis", "— private desktop diary", "product · beta testers wanted", True, [
    "text + voice journaling, fully local, with ai-readable export for any model you trust.",
    "tauri · typescript · tiptap"]),
+ ("Lumen", "— native windows browser", "daily driver · source coming", False, [
+   "a rust shell around webview2, the interface drawn natively in direct2d. 18.7 mb idle, sleeping tabs,",
+   "ads and trackers blocked, and an mcp door for ai agents. v0.6.4 · rust · webview2 · direct2d"]),
  ("spektr", "— terminal spectrum analyser", "github.com/MrEmoji27/spektr", False, [
    "visualises whatever the system is playing — no file, no api, no service. 27 render modes, 40 themes, a",
    "hash-vetted plugin api, locked 60 fps. shipped to pypi and as a windows exe. python · numpy · textual"]),
- ("F1 Machine Learning", "— 2026 season prediction model", "personal research", False, [
-   "gradient-boosted championship forecasts from five seasons of race data, time-series validated,",
-   "updated as real races finish. python · scikit-learn · fastf1"]),
+ ("Nex", "— peer-to-peer terminal chat", "github.com/MrEmoji27/nex", False, [
+   "two terminals, one encrypted noise link — no server in the middle, because there is no server. rooms,",
+   "discovery and calls that carry real sound. an alpha, and it says so. typescript · bun · noise"]),
  ("Zemo's Vault", "— lab archive for cse students", "shipped", False, [
    "interactive archive of lab experiments — browse year > subject > experiment with code and outputs,",
    "plus an arcade mode of mini-games. react · tailwind"]),
@@ -143,7 +146,7 @@ for i,(name, sub, right, red, desc) in enumerate(PROJECTS):
     txt(L, cur, desc[0], "SM", 8.2)
     cur += 10.6
     txt(L, cur, desc[1], "SM", 8.2)
-    if i < len(PROJECTS)-1: cur += 16.1
+    if i < len(PROJECTS)-1: cur += 12.2   # was 16.1 — room for the ninth project
 
 # ---- CURRENTLY
 cur += 18.0

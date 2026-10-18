@@ -101,7 +101,7 @@
   /* ================= the composition ================= */
   /* NOTE: this layer must never be sized in dvh. on mobile the url bar
      collapsing/expanding would resize it on every scroll direction change,
-     re-rasterising 11 filtered shapes mid-gesture. lvh is the largest
+     re-rasterising 12 filtered shapes mid-gesture. lvh is the largest
      viewport height and is static, so the layer is painted once. */
   #art{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;z-index:0}
   #art .ink{fill:var(--ink)}
@@ -485,7 +485,7 @@
   .card-tag{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#e8e4d8;opacity:.82}
   .card-flag{align-self:flex-start;margin-top:.3rem;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;background:var(--red-deep);color:#e8e4d8;padding:.22em .55em;animation:blink 1.6s steps(2) infinite}
   .ticker.paused{outline:3px dashed var(--red);outline-offset:-3px}
-  /* plates 07/08/10 have no screenshot. as a plain black box they read as a
+  /* plates 05/07/08/12 have no screenshot. as a plain black box they read as a
      broken image; as a halftone field they read as unprinted stock, which is
      the language the rest of the page is already speaking. */
   .card--noimg{
@@ -837,7 +837,7 @@
      the effects below are near-invisible at phone size but cost a repaint
      on each frame of a scroll, so they come off. desktop keeps all of it. */
   @media(hover:none),(max-width:700px){
-    /* 11 drop-shadowed svg nodes behind a scrolling page is the single
+    /* 12 drop-shadowed svg nodes behind a scrolling page is the single
        most expensive thing here — the shapes stay, the filter goes. */
     #art .shape,body.neg #art .shape{filter:none}
     /* ruled grid sits at 6% opacity over 64px squares: unreadable on a phone */
@@ -906,8 +906,12 @@
   <path class="shape" data-w="eails" data-depth="1.1" d="M 240 860 A 260 260 0 0 1 500 600 L 500 860 Z" fill="#1f3fd8" stroke="#0d0d0b" stroke-width="4"/>
   <!-- № 04 anamnesis : yellow circle -->
   <circle class="shape" data-w="chronicle" data-depth="1.8" cx="360" cy="200" r="88" fill="#f0b800" stroke="#0d0d0b" stroke-width="4"/>
-  <!-- № 05 f1 : ink wedge -->
-  <path class="shape ink" data-w="f1ml" data-depth="1.2" d="M 1330 700 L 1440 640 L 1440 820 Z"/>
+  <!-- № 05 nex : two peers, one link -->
+  <g class="shape" data-w="nex" data-depth="1.2">
+    <line x1="1318" y1="690" x2="1400" y2="772" stroke="#0d0d0b" stroke-width="10"/>
+    <circle class="ink" cx="1318" cy="690" r="30"/>
+    <circle cx="1400" cy="772" r="30" fill="#e03418" stroke="#0d0d0b" stroke-width="4"/>
+  </g>
   <!-- № 06 ttz : red ring -->
   <circle class="shape" data-w="ttz" data-depth="2.1" cx="760" cy="150" r="64" fill="none" stroke="#e03418" stroke-width="14"/>
   <!-- № 07 vault : yellow square -->
@@ -924,7 +928,13 @@
     <rect x="294" y="724" width="17" height="52" fill="#1f3fd8" stroke="#0d0d0b" stroke-width="3"/>
     <rect x="316" y="700" width="17" height="76" fill="#1f3fd8" stroke="#0d0d0b" stroke-width="3"/>
   </g>
-  <!-- № 11 this site : outlined square (the frame itself) -->
+  <!-- № 11 lumen : a window, drawn natively -->
+  <g class="shape" data-w="lumen" data-depth="1.6">
+    <rect x="1144" y="432" width="170" height="122" fill="#1f3fd8" stroke="#0d0d0b" stroke-width="4"/>
+    <rect x="1144" y="432" width="170" height="20" fill="#0d0d0b"/>
+    <circle cx="1158" cy="442" r="5" fill="#e03418"/>
+  </g>
+  <!-- № 12 this site : outlined square (the frame itself) -->
   <rect class="shape ink-s" data-w="site" data-depth="2.0" x="470" y="105" width="64" height="64" fill="none" stroke-width="7" style="--r:-12deg"/>
 
   <!-- scattered marks -->
@@ -991,8 +1001,8 @@
     </div>
     <div class="strip s2">
       <div class="strip-inner">
-        eleven works <span class="dot">●</span> zero trackers <span class="dot">●</span> open to work <span class="dot">●</span> testers wanted <span class="dot">●</span>
-        eleven works <span class="dot">●</span> zero trackers <span class="dot">●</span> open to work <span class="dot">●</span> testers wanted <span class="dot">●</span>&#160;
+        twelve works <span class="dot">●</span> zero trackers <span class="dot">●</span> open to work <span class="dot">●</span> testers wanted <span class="dot">●</span>
+        twelve works <span class="dot">●</span> zero trackers <span class="dot">●</span> open to work <span class="dot">●</span> testers wanted <span class="dot">●</span>&#160;
       </div>
     </div>
   </div>
@@ -1071,13 +1081,12 @@
             <span class="card-flag">testers wanted</span>
           </span>
         </button>
-        <button class="card" data-w="f1ml" type="button" aria-expanded="false" aria-controls="wd-f1ml" aria-label="open F1 Machine Learning project">
-          <img class="card-media" src="img/f1-predictions.jpg" alt="" loading="lazy">
+        <button class="card card--noimg" data-w="nex" type="button" aria-expanded="false" aria-controls="wd-nex" aria-label="open Nex">
+          <span class="card-ghost" aria-hidden="true">05</span>
           <span class="card-body">
             <span class="card-n">05</span>
-            <span class="card-name">F1 Machine Learning project</span>
-            <span class="card-tag">python · scikit-learn · fastf1</span>
-            
+            <span class="card-name">Nex</span>
+            <span class="card-tag">typescript · bun · noise</span>
           </span>
         </button>
         <button class="card" data-w="ttz" type="button" aria-expanded="false" aria-controls="wd-ttz" aria-label="open Talk to Zemo">
@@ -1125,10 +1134,19 @@
             <span class="card-flag">new — shipped</span>
           </span>
         </button>
-        <button class="card card--noimg" data-w="site" type="button" aria-expanded="false" aria-controls="wd-site" aria-label="open This Site">
-          <span class="card-ghost" aria-hidden="true">11</span>
+        <button class="card" data-w="lumen" type="button" aria-expanded="false" aria-controls="wd-lumen" aria-label="open Lumen">
+          <img class="card-media" src="img/lumen-signal-light.jpg" alt="" loading="lazy">
           <span class="card-body">
             <span class="card-n">11</span>
+            <span class="card-name">Lumen</span>
+            <span class="card-tag">rust · webview2 · direct2d · mcp</span>
+            <span class="card-flag">daily driver</span>
+          </span>
+        </button>
+        <button class="card card--noimg" data-w="site" type="button" aria-expanded="false" aria-controls="wd-site" aria-label="open This Site">
+          <span class="card-ghost" aria-hidden="true">12</span>
+          <span class="card-body">
+            <span class="card-n">12</span>
             <span class="card-name">This Site</span>
             <span class="card-tag">html · css · js — nothing else</span>
             
@@ -1239,26 +1257,22 @@
           </div>
         </div>
       </div>
-      <div class="wd" id="wd-f1ml" data-w="f1ml" role="region" aria-label="F1 Machine Learning — project detail">
+      <div class="wd" id="wd-nex" data-w="nex" role="region" aria-label="Nex — project detail">
         <div class="wd-inner">
-          <button class="wd-close" type="button" aria-label="close F1 Machine Learning project">close &#10005;</button>
+          <button class="wd-close" type="button" aria-label="close Nex">close &#10005;</button>
           <header class="wd-head">
-            <span class="slide-num">&#8470;05</span><h3 class="w-name">F1 Machine Learning project</h3><span class="w-tag">python · scikit-learn · fastf1</span>
-            <p class="w-tease">predicting the 2026 f1 season with ml</p>
+            <span class="slide-num">&#8470;05</span><h3 class="w-name">Nex</h3><span class="w-tag">typescript · bun · noise</span>
+            <p class="w-tease">terminal-native p2p chat — no server in the middle</p>
           </header>
           <div class="wd-body">
-              <p class="w-desc">a machine-learning model that predicts the 2026 formula 1 championship using five years of real race data — and updates its forecast as each new race finishes.</p>
+              <p class="w-desc">a chat application that lives in your terminal and connects you straight to the other person over an encrypted link — no server in the middle, because there is no server at all. your identity is a long-term key on your machine, not an account anybody issues you. an alpha, and it says so: new work lands in the repo before it reaches the installer.</p>
           <ul class="w-feats">
-            <li>data pipeline over fastf1 covering the 2021–2025 seasons</li>
-            <li>gradient-boosting model, tested properly with time-series cross-validation</li>
-            <li>early-season results blended into predictions as races complete</li>
-            <li>charts the full championship forecast for the 2026 driver grid</li>
+            <li>noise-based encrypted transport — forward secrecy, replay and tamper resistance, identities pinned the first time you meet</li>
+            <li>rooms: group chat relayed by the host peer rather than a service, so a room lasts exactly as long as its host does</li>
+            <li>two people on the same network find each other by themselves; across the internet a nex:// invite code, or an optional rendezvous service that passes one introduction and nothing else</li>
+            <li>voice that carries real sound — a native sidecar captures the microphone, encodes opus and cancels echo; /call does room, invite and voice in one command</li>
           </ul>
-          <div class="w-shots">
-            <a href="img/f1-predictions.jpg" target="_blank" rel="noopener"><img src="img/f1-predictions-duo.png" alt="predicted 2026 f1 championship — top 10 drivers, feature importance, and model fit charts" loading="lazy"></a>
-          </div>
-          <p class="fig" aria-hidden="true">fig. 01 — 2026 championship forecast &amp; model diagnostics</p>
-          <div class="w-links"><span class="na">personal research — code private</span></div>
+          <div class="w-links"><a href="https://github.com/MrEmoji27/nex" target="_blank" rel="noopener">code →</a><span class="na">alpha · irm https://raw.githubusercontent.com/MrEmoji27/nex/main/packaging/install.ps1 | iex</span></div>
           </div>
         </div>
       </div>
@@ -1378,11 +1392,36 @@
           </div>
         </div>
       </div>
+      <div class="wd" id="wd-lumen" data-w="lumen" role="region" aria-label="Lumen — project detail">
+        <div class="wd-inner">
+          <button class="wd-close" type="button" aria-label="close Lumen">close &#10005;</button>
+          <header class="wd-head">
+            <span class="slide-num">&#8470;11</span><h3 class="w-name">Lumen</h3><span class="w-tag">rust · webview2 · direct2d · mcp</span>
+            <p class="w-tease">my own windows browser — 18.7 mb idle</p>
+          </header>
+          <div class="wd-body">
+              <p class="w-desc">the browser i use every day, because i built it: a rust shell around microsoft's webview2, with every pixel of the interface drawn natively in direct2d instead of html. pages cost what they cost in anything else chromium-shaped — what's mine is the window around them, and it is built on one rule: if a feature costs memory while you are not using it, it had better be worth it. 18.7 mb idle. windows only, early, and in daily use. v0.6.4 — the source is not public yet.</p>
+          <ul class="w-feats">
+            <li>ads, trackers and cookie banners blocked by default with a privacy report, plus reader view, dark pages, on-device translation, aria2 downloads and torrents, and keepass logins</li>
+            <li>sleeping tabs and one renderer per site instead of one per tab — forty heavy tabs settled at 1.1 gb, at 0.4% cpu, where the same load used 54 renderer processes before</li>
+            <li>a door for ai agents over mcp — 47 tools, each agent with its own tabs and its own profile, working on an off-screen stage and handing the tab back when a login or a payment needs a person</li>
+            <li>luau scripts for multi-step jobs: a ten-step agent workflow as one call and 580 bytes back, where the same work was twelve calls and 4 kb</li>
+          </ul>
+          <div class="w-shots">
+            <a href="img/lumen-signal-light.jpg" target="_blank" rel="noopener"><img src="img/lumen-signal-light-duo.png" alt="lumen in the signal look — the start page with a big clock, two number cards and the ink search bar" loading="lazy"></a>
+            <a href="img/lumen-glass.jpg" target="_blank" rel="noopener"><img src="img/lumen-glass-duo.png" alt="lumen in the glass look — a violet and pink wallpaper under a translucent sidebar and floating cards" loading="lazy"></a>
+            <a href="img/lumen-drive.jpg" target="_blank" rel="noopener"><img src="img/lumen-drive-duo.png" alt="the drive page — a task card with run, six numbered agent steps with their times, and the agent's own words" loading="lazy"></a>
+          </div>
+          <p class="fig" aria-hidden="true">fig. 01–03 — signal · glass · drive</p>
+          <div class="w-links"><span class="na">daily driver · source coming</span></div>
+          </div>
+        </div>
+      </div>
       <div class="wd" id="wd-site" data-w="site" role="region" aria-label="This Site — project detail">
         <div class="wd-inner">
           <button class="wd-close" type="button" aria-label="close This Site">close &#10005;</button>
           <header class="wd-head">
-            <span class="slide-num">&#8470;11</span><h3 class="w-name">This Site</h3><span class="w-tag">html · css · js — nothing else</span>
+            <span class="slide-num">&#8470;12</span><h3 class="w-name">This Site</h3><span class="w-tag">html · css · js — nothing else</span>
             <p class="w-tease">the portfolio is also the work sample</p>
           </header>
           <div class="wd-body">
@@ -1788,7 +1827,7 @@
   if(!reduced && fine){
     var movers = document.querySelectorAll('#art [data-depth]');
     var mx = 0, my = 0, cx = 0, cy = 0;
-    var scrollFactors = {zoro:-.06, zolt:.04, eails:-.03, chronicle:.09, f1ml:-.05, ttz:.07, vault:.06, swelpt:-.08, ytmcli:.08, spektr:-.07, site:.05};
+    var scrollFactors = {zoro:-.06, zolt:.04, eails:-.03, chronicle:.09, nex:-.05, ttz:.07, vault:.06, swelpt:-.08, ytmcli:.08, spektr:-.07, lumen:.03, site:.05};
     window.addEventListener('mousemove', function(e){
       mx = (e.clientX / window.innerWidth) * 2 - 1;
       my = (e.clientY / window.innerHeight) * 2 - 1;

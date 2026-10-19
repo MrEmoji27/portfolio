@@ -123,8 +123,8 @@ PROJECTS = [
    "text + voice journaling, fully local, with ai-readable export for any model you trust.",
    "tauri · typescript · tiptap"]),
  ("Lumen", "— native windows browser", "daily driver · source coming", False, [
-   "a rust shell around webview2, the interface drawn natively in direct2d. 18.7 mb idle, sleeping tabs,",
-   "ads and trackers blocked, and an mcp door for ai agents. v0.6.6 · rust · webview2 · direct2d"]),
+   "a rust shell around webview2, the interface drawn natively in direct2d. 19.9 mb idle, sleeping tabs,",
+   "ads and trackers blocked, and an mcp door for ai agents. v0.6.7 · rust · webview2 · direct2d"]),
  ("spektr", "— terminal spectrum analyser", "github.com/MrEmoji27/spektr", False, [
    "visualises whatever the system is playing — no file, no api, no service. 27 render modes, 40 themes, a",
    "hash-vetted plugin api, locked 60 fps. shipped to pypi and as a windows exe. python · numpy · textual"]),

@@ -73,12 +73,12 @@
 
  №11  LUMEN           rust · webview2 · direct2d · mcp
       a native windows browser: a rust shell around webview2,
-      every pixel of the interface drawn in direct2d, 18.7 mb
+      every pixel of the interface drawn in direct2d, 19.9 mb
       idle. ads and trackers blocked, sleeping tabs, keepass,
       aria2, workspaces, split view — and an mcp door for ai
-      agents: 47 tools, each with its own tabs and profile,
+      agents: 48 tools, each with its own tabs and profile,
       on a stage of their own. three looks: signal, glass,
-      precise. daily driver, v0.6.6 — source not public yet.
+      precise. daily driver, v0.6.7 — source not public yet.
 
  №12  THIS SITE       html · css · js — nothing else
       one hand-written file, no framework, no build step,
